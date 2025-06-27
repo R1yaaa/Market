@@ -71,16 +71,23 @@ public:
     
     /**
      * @brief Gibt den aktuell eingeloggten Benutzer zurück
-     * @return Pointer zum User oder nullptr wenn nicht eingeloggt
+     * @return Shared Pointer zum User (leer wenn nicht eingeloggt)
+     * 
+     * Beispielnutzung:
+     * @code
+     * if (auto user = market.getCurrentUser()) {
+     *     // Mit User arbeiten
+     * }
+     * @endcode
      */
-    User* getCurrentUser() const;
+    std::shared_ptr<User> getCurrentUser() const;
     
     /**
      * @brief Sucht einen Benutzer nach Benutzername
      * @param username Benutzername
-     * @return Pointer zum User oder nullptr wenn nicht gefunden
+     * @return Weak Pointer zum User (muss mit lock() geprüft werden)
      */
-    User* getUser(const std::string& username);
+    std::weak_ptr<User> getUser(const std::string& username);
     
     // Handelsgüter
     
@@ -96,14 +103,14 @@ public:
      * @brief Gibt alle Handelsgüter zurück
      * @return Vektor mit unique_ptr zu den Gütern
      */
-    const std::vector<Good::Ptr>& getGoods() const;
+   std::vector<std::shared_ptr<Good>> goods;
     
     /**
      * @brief Sucht ein Handelsgut nach ID
      * @param goodId ID des gesuchten Guts
      * @return Pointer zum Good oder nullptr wenn nicht gefunden
      */
-    Good* getGood(int goodId);
+   std::shared_ptr<Good> getGood(int goodId);
     
     // Handel
     
@@ -186,9 +193,9 @@ public:
 
 private:
     // Benutzerverwaltung
-    std::unordered_map<std::string, std::unique_ptr<User>> users; ///< Alle registrierten User (Benutzername -> unique_ptr)
-    User* current_user = nullptr; ///< Aktuell eingeloggter User (roher Pointer, kein Besitz)
-    
+    std::unordered_map<std::string, std::shared_ptr<User>> users; ///< Alle registrierten User (Benutzername -> shared_ptr)
+    std::weak_ptr<User> current_user; ///< Aktuell eingeloggter User (schwache Referenz)
+
     // Marktdaten
     std::vector<Good::Ptr> goods; ///< Alle verfügbaren Handelsgüter
     std::vector<TradeOffer::Ptr> offers; ///< Aktive Handelsangebote
@@ -202,7 +209,7 @@ private:
      * @return true wenn Handel erfolgreich, sonst false
      * 
      * Prüft Preis- und Mengenkompatibilität.
-     * Transferiert Güter und Guthaben.
+     * Transferiert Guthaben und Güter.
      * Aktualisiert oder entfernt Angebote nach Handel.
      */
     bool tryExecuteTrade(TradeOffer::Ptr buy_offer, TradeOffer::Ptr sell_offer);
