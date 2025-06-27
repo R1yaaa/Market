@@ -24,7 +24,7 @@ public:
      * @brief Führt eine Geldabhebung durch
      * @param amount Abzuhebender Betrag
      * @return true bei Erfolg, false wenn nicht genügend Guthaben
-     * 
+     *
      * Beispiel:
      * @code
      * account->withdraw(50.0); // Hebt 50 POOSE-Coins ab
@@ -35,7 +35,7 @@ public:
     /**
      * @brief Zahlt Geld auf das Konto ein
      * @param amount Einzuzahlender Betrag
-     * 
+     *
      * Betrag muss positiv sein. Negative Werte werden ignoriert.
      */
     void deposit(double amount);
@@ -52,7 +52,7 @@ public:
      * @brief Prüft ob ausreichend Guthaben vorhanden ist
      * @param amount Benötigter Betrag
      * @return true wenn Kontostand >= amount, sonst false
-     * 
+     *
      * Beispiel für Handelsprüfung:
      * @code
      * if(account->hasEnoughBalance(purchase_total)) {
