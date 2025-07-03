@@ -1,29 +1,12 @@
 #pragma once
 #include <vector>
-#include <map>
 #include <memory>
 #include <unordered_map>
 #include <string>
 #include "user.hpp"
 #include "good.hpp"
 #include "price_generator.hpp"
-#include "chat.hpp"
-
-/**
- * @brief Repräsentiert ein Handelsangebot auf dem Markt
- * 
- * Enthält alle Informationen über ein Kauf- oder Verkaufsangebot.
- * Nutzt Smart Pointer für sicheres Speichermanagement.
- */
-struct TradeOffer {
-    using Ptr = std::shared_ptr<TradeOffer>; ///< Shared Pointer Typ für TradeOffer
-    
-    std::weak_ptr<User> user;     ///< Weak-Pointer zum anbietenden User (vermeidet Besitzzyklus)
-    int goodId;                   ///< ID des gehandelten Guts
-    int quantity;                 ///< Angebotene Menge
-    double price;                 ///< Angebotspreis pro Einheit
-    bool is_buy_offer;            ///< true = Kaufangebot, false = Verkaufsangebot
-};
+#include "trade_offer.hpp"
 
 /**
  * @brief Hauptklasse für den Handelsplatz
@@ -33,16 +16,15 @@ struct TradeOffer {
  * - Handelsgüter und Preissimulation
  * - Kauf- und Verkaufsangebote
  * - Handelsausführung
- * - Chat-System
  * 
- * Nutzt Smart Pointer für automatisches Speichermanagement.
+ * 
  */
 class Market {
 public:
     /**
      * @brief Konstruktor für den Markt
      * 
-     * Initialisiert die Handelsgüter und das Chat-System.
+     * Initialisiert die Handelsgüter (mindestens 10 rare Güter).
      */
     Market();
     
@@ -71,92 +53,70 @@ public:
     
     /**
      * @brief Gibt den aktuell eingeloggten Benutzer zurück
-     * @return Shared Pointer zum User (leer wenn nicht eingeloggt)
+     * @return Shared Pointer zum User (nullptr wenn nicht eingeloggt)
      * 
-     * Beispielnutzung:
-     * @code
-     * if (auto user = market.getCurrentUser()) {
-     *     // Mit User arbeiten
-     * }
-     * @endcode
+     *
      */
     std::shared_ptr<User> getCurrentUser() const;
     
     /**
      * @brief Sucht einen Benutzer nach Benutzername
      * @param username Benutzername
-     * @return Weak Pointer zum User (muss mit lock() geprüft werden)
+     * @return Shared Pointer zum User (nullptr wenn nicht gefunden)
      */
-    std::weak_ptr<User> getUser(const std::string& username);
+    std::shared_ptr<User> getUser(const std::string& username);
     
     // Handelsgüter
     
     /**
-     * @brief Initialisiert die Handelsgüter des Marktes
-     * 
-     * Erzeugt mindestens 10 seltene Güter mit Startpreisen.
-     * Muss vor der ersten Nutzung des Marktes aufgerufen werden.
-     */
-    void initializeGoods();
-    
-    /**
      * @brief Gibt alle Handelsgüter zurück
-     * @return Vektor mit unique_ptr zu den Gütern
+     * @return Konstante Referenz zum Vektor mit shared_ptr zu den Gütern
      */
-   std::vector<std::shared_ptr<Good>> goods;
+    const std::vector<std::shared_ptr<Good>>& getGoods() const;
     
     /**
      * @brief Sucht ein Handelsgut nach ID
      * @param goodId ID des gesuchten Guts
-     * @return Pointer zum Good oder nullptr wenn nicht gefunden
+     * @return Shared Pointer zum Good (nullptr wenn nicht gefunden)
      */
-   std::shared_ptr<Good> getGood(int goodId);
+    std::shared_ptr<Good> getGood(int goodId);
     
     // Handel
     
     /**
      * @brief Erstellt ein Verkaufsangebot
-     * @param username Benutzername des Anbieters
      * @param goodId ID des angebotenen Guts
      * @param quantity Angebotene Menge
      * @param price Gewünschter Preis pro Einheit
      * @return true bei Erfolg, false bei ungültigen Parametern
      * 
-     * Prüft ob der User genügend Güter besitzt.
+     * Prüft ob der eingeloggte User genügend Güter besitzt.
      * Führt automatisch Matching mit Kaufangeboten durch.
      */
-    bool placeSellOffer(const std::string& username, int goodId, int quantity, double price);
+    bool placeSellOffer(int goodId, int quantity, double price);
     
     /**
      * @brief Erstellt ein Kaufangebot
-     * @param username Benutzername des Käufers
      * @param goodId ID des gewünschten Guts
      * @param quantity Gewünschte Menge
      * @param price Maximalpreis pro Einheit
      * @return true bei Erfolg, false bei ungültigen Parametern
      * 
-     * Prüft ob der User genügend Guthaben hat.
+     * Prüft ob der eingeloggte User genügend Guthaben hat.
      * Führt automatisch Matching mit Verkaufsangeboten durch.
      */
-    bool placeBuyOffer(const std::string& username, int goodId, int quantity, double price);
+    bool placeBuyOffer(int goodId, int quantity, double price);
     
     /**
-     * @brief Führt einen Handel manuell aus
-     * @param buyer Benutzername des Käufers
-     * @param seller Benutzername des Verkäufers
-     * @param goodId ID des gehandelten Guts
-     * @param quantity Gehandelte Menge
+     * @brief Kauft ein Gut direkt zum aktuellen Marktpreis
+     * @param goodId ID des zu kaufenden Guts
+     * @param quantity Gewünschte Menge
      * @return true bei Erfolg, false bei ungültigen Parametern
      * 
-     * Wird normalerweise automatisch durch placeBuyOffer/placeSellOffer aufgerufen.
-     * Transferiert Guthaben und Güter zwischen den Nutzern.
+     * Kauft zum aktuellen Marktpreis des Guts.
+     * Der eingeloggte User muss genügend Guthaben haben.
      */
-    bool executeTrade(
-        const std::string& buyer, 
-        const std::string& seller, 
-        int goodId, 
-        int quantity
-    );
+    bool buyGood(int goodId, int quantity);
     
     // Preise
     
@@ -164,7 +124,7 @@ public:
      * @brief Aktualisiert alle Güterpreise
      * 
      * Wendet den Random-Walk-Algorithmus auf alle Güter an.
-     * Sollte regelmäßig aufgerufen werden (z.B. alle 5-10 Sekunden).
+     * Sollte regelmäßig aufgerufen werden (z.B. alle paar Sekunden).
      */
     void updatePrices();
     
@@ -172,45 +132,51 @@ public:
     
     /**
      * @brief Gibt alle aktiven Handelsangebote zurück
-     * @return Vektor mit shared_ptr zu TradeOffers
+     * @return Konstante Referenz zum Vektor mit shared_ptr zu TradeOffers
      */
-    std::vector<TradeOffer::Ptr> getOffers() const;
+    const std::vector<std::shared_ptr<TradeOffer>>& getOffers() const;
     
     /**
      * @brief Gibt Angebote für ein bestimmtes Gut zurück
      * @param goodId ID des gesuchten Guts
      * @return Vektor mit passenden TradeOffers
      */
-    std::vector<TradeOffer::Ptr> getOffersForGood(int goodId) const;
-    
-    // Chat
-    
-    /**
-     * @brief Gibt das Chat-System des Marktes zurück
-     * @return shared_ptr zum Chat-Objekt
-     */
-    std::shared_ptr<Chat> getChat();
+    std::vector<std::shared_ptr<TradeOffer>> getOffersForGood(int goodId) const;
 
 private:
     // Benutzerverwaltung
-    std::unordered_map<std::string, std::shared_ptr<User>> users; ///< Alle registrierten User (Benutzername -> shared_ptr)
-    std::weak_ptr<User> current_user; ///< Aktuell eingeloggter User (schwache Referenz)
+    std::unordered_map<std::string, std::shared_ptr<User>> users; ///< Alle registrierten User
+    std::shared_ptr<User> current_user; ///< Aktuell eingeloggter User
 
     // Marktdaten
-    std::vector<Good::Ptr> goods; ///< Alle verfügbaren Handelsgüter
-    std::vector<TradeOffer::Ptr> offers; ///< Aktive Handelsangebote
+    std::vector<std::shared_ptr<Good>> goods; ///< Alle verfügbaren Handelsgüter
+    std::vector<std::shared_ptr<TradeOffer>> offers; ///< Aktive Handelsangebote
     PriceGenerator price_generator; ///< Preisgenerator für Random-Walk
-    std::shared_ptr<Chat> chat; ///< Chat-System für Nutzerkommunikation
     
     /**
-     * @brief Versucht einen Handel zwischen zwei Angeboten auszuführen
+     * @brief Initialisiert die Handelsgüter des Marktes
+     * 
+     * Erzeugt mindestens 10 seltene Güter mit Startpreisen.
+     */
+    void initializeGoods();
+    
+    /**
+     * @brief Versucht automatisches Matching zwischen Angeboten
+     * 
+     * Sucht nach kompatiblen Kauf- und Verkaufsangeboten und führt Handel aus.
+     */
+    void matchOrders();
+    
+    /**
+     * @brief Führt einen Handel zwischen zwei Angeboten aus
      * @param buy_offer Kaufangebot
      * @param sell_offer Verkaufsangebot
      * @return true wenn Handel erfolgreich, sonst false
-     * 
-     * Prüft Preis- und Mengenkompatibilität.
-     * Transferiert Guthaben und Güter.
-     * Aktualisiert oder entfernt Angebote nach Handel.
      */
-    bool tryExecuteTrade(TradeOffer::Ptr buy_offer, TradeOffer::Ptr sell_offer);
+    bool executeTrade(std::shared_ptr<TradeOffer> buy_offer, std::shared_ptr<TradeOffer> sell_offer);
+    
+    /**
+     * @brief Entfernt ungültige Angebote aus der Liste
+     */
+    void cleanupOffers();
 };
