@@ -92,12 +92,17 @@ For open source projects, say how it is licensed.
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
 
+## Aufteilung
+Marktlogik -> Saja
+REST-Server und Pybind -> Lina
+REST-Client und QT -> Ryia
 
 ## Anforderungsliste
 - [ ] C++ Header und Implementierung der Marktlogik
 - [ ] pybind, REST-Server und REST-Client (QT) entwickeln
 - [ ] REST-Endpunkte dokumentieren   (editor-swagger.io)
 - [ ] mindestens 10 rare Güter
+- [ ] Passwort, Konto und Inventar für jeden Nutzer
 - [ ] Live-Updates 
 - [ ] Preise sollen schwanken
 
