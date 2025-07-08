@@ -14,13 +14,10 @@ class UserModel(BaseModel):
     username: str
     password: str
 
-class BuyGood(BaseModel):
+class GoodModel(BaseModel):
     goodId: str
     quantity: int
-
-class SellGood(BaseModel):
-    goodId: str
-    quantity: int    
+   
 
 @app.post("/register")
 async def register(user: UserModel):
@@ -109,7 +106,7 @@ async def offers():
 
 
 @app.post("/password/{password}/buy")
-async def buy(data: BuyGood, request: Request, password: str):
+async def buy(data: GoodModel, request: Request, password: str):
     try:
         print(f"DEBUG: Trying to buy {data.goodId}")
 
@@ -144,7 +141,7 @@ async def buy(data: BuyGood, request: Request, password: str):
 
 
 @app.post("/password/{password}/sell")
-async def sell(data: SellGood, request: Request, password: str):
+async def sell(data: GoodModel, request: Request, password: str):
     try:
         print(f"DEBUG: Trying to sell {data.goodId}")
 
@@ -190,7 +187,6 @@ async def logout(request: Request):
         raise HTTPException(status_code=500, detail=f"Failed to logout: {str(e)}")
 
 #nicht zweimal speichern lieber nur in c++
-#logout?
 #buy genügend güter im markt
 #woher weiß cpp welcher user? buy und sell
 #nicht goodid, sondern name?
