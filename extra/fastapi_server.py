@@ -71,12 +71,12 @@ async def accountinfo(username: str):
             print(f"DEBUG: {username} not found in accounts dict")
             raise HTTPException(status_code=404, detail="User not found")
         
-        balance = account.getBalance()
-        inventory = user.getInventory()
+        balance = account.getBalance(username)  #kein parameter in hpp
+        inventory = user.getInventory(username) #kein parameter in hpp
 
         return {
             "balance": balance,
-            "inventory": inventory,
+            "inventory": inventory
         }
     except Exception as e:
         print(f"ERROR showing account: {e}")
@@ -97,9 +97,14 @@ async def prices():
 @app.get("/offers")
 async def offers():
     try:
-        goods = market.getGoods()
+        obj_goods = market.getGoods()
 
-        return {"goods": goods}
+        return {
+            "ID": obj_goods.getId,
+            "Name": obj_goods.getName,
+            "Price": obj_goods.getPrice,
+            "Quantity": obj_goods.getQuantity
+        }
     except Exception as e:
         print(f"ERROR showing offers: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to show offers: {str(e)}")
@@ -117,24 +122,29 @@ async def buy(data: GoodModel, request: Request, password: str):
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
-        if not user.authenticate(password):
+        restquantity = good.getQuantity(goodId) #in hpp ohne parameter
+        if data.quantity > restquantity:
+            print("DEBUG: Not enough goods left")
+            raise HTTPException(status_code=400, detail="Not enough goods in the market left")
+
+        if not user.authenticate(username, password):    #in hpp ohne username parameter
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
         price = good.getCurrentPrice(goodId)    #in hpp ohne parameter
         amount = price*data.quantity
-        if not account.hasEnoughBalance(amount):
+        if not account.hasEnoughBalance(username, amount):  #in hpp ohne username parameter
             print("DEBUG: Not enough money")
             raise HTTPException(status_code=400, detail="Not enough money")
         
-        market.buyGood(goodId, data.quantity)
+        market.buyGood(username, goodId, data.quantity) #in hpp ohne username parameter
 
-        balance = account.getBalance()
-        inventory = user.getInventory()
+        balance = account.getBalance(username)  #in hpp ohne parameter
+        inventory = user.getInventory(username) #in hpp ohne parameter
 
         return {
             "inventory":inventory,
-            "balance":balance,
+            "balance":balance
         }
     except Exception as e:
         print(f"ERROR buying good: {e}")
@@ -153,23 +163,23 @@ async def sell(data: GoodModel, request: Request, password: str):
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
-        if not user.authenticate(password):
+        if not user.authenticate(username, password):   #in hpp ohne username parameter
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
-        anzahl = user.getGoodQuantity(goodId)
+        anzahl = user.getGoodQuantity(username, goodId) #in hpp ohne username parameter
         if data.quantity > anzahl:
             print("DEBUG: Not enough in inventory")
             raise HTTPException(status_code=400, detail="Not enough goods in the inventory")
 
-        market.sellGood(goodId, data.quantity) #methode in hpp hinzufügen
+        market.sellGood(username, goodId, data.quantity)    #in hpp ohne username parameter
 
-        balance = account.getBalance()
-        inventory = user.getInventory()
+        balance = account.getBalance(username)  #in hpp ohne parameter
+        inventory = user.getInventory(username) #in hpp ohne parameter
 
         return {
                 "inventory":inventory,
-                "balance":balance,
+                "balance":balance
             }
     except Exception as e:
         print(f"ERROR selling good: {e}")
@@ -181,7 +191,7 @@ async def logout(request: Request):
         username = request.headers.get("username")        
         print(f"DEBUG: {username} trying to logout")
 
-        market.logout()
+        market.logout(username) #in hpp ohne parameter
 
         return {"message":f"{username} logged out"}
     except Exception as e:
@@ -189,11 +199,6 @@ async def logout(request: Request):
         raise HTTPException(status_code=500, detail=f"Failed to logout: {str(e)}")
 
 #nicht zweimal speichern lieber nur in c++
-#buy genügend güter im markt
-#woher weiß cpp welcher user? buy und sell
-#doxygen
-
-#pybind
 
 if __name__ == '__main__':
     uvicorn.run("fastapi_server:app", host="127.0.0.1", port=8000, reload=True)

@@ -6,6 +6,7 @@
 #include "user.hpp"
 #include "good.hpp"
 #include "price_generator.hpp"
+#include "trade_offer.hpp"
 
 /**
  * @brief Hauptklasse für den Handelsplatz
