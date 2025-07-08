@@ -21,6 +21,12 @@ class GoodModel(BaseModel):
 
 @app.post("/register")
 async def register(user: UserModel):
+    """
+    @brief Register User
+    @param Userdata containing username and password
+    @return Status message
+    @throws HTTPException 500 if registering fails
+    """
     try:
         print(f"DEBUG: User {user.username} trying to register")
 
@@ -41,6 +47,12 @@ async def register(user: UserModel):
 
 @app.post("/login")
 async def login(user: UserModel):
+    """
+    @brief Login User
+    @param Userdata containing username and password
+    @return Status message
+    @throws HTTPException 500 if logging in fails
+    """
     try:
         print(f"DEBUG: User {user.username} trying to login")
 
@@ -65,6 +77,12 @@ async def login(user: UserModel):
 
 @app.get("/user/{username}/accountinfo")
 async def accountinfo(username: str):
+    """
+    @brief Useraccount Info
+    @param Username
+    @return Balance and Inventory
+    @throws HTTPException 500 if showing account fails
+    """
     try:
         user_obj = accounts.get(username)
         if not user_obj:
@@ -85,6 +103,11 @@ async def accountinfo(username: str):
 
 @app.get("/prices")
 async def prices():
+    """
+    @brief Updating prices
+    @return Updated prices
+    @throws HTTPException 500 if prices updating fails
+    """
     try:
         prices = market.updatePrices()
 
@@ -96,6 +119,11 @@ async def prices():
 
 @app.get("/offers")
 async def offers():
+    """
+    @brief Presents all goods
+    @return All data from each good (ID, Name, Price, Quantity)
+    @throws HTTPException 500 if showing goods fails
+    """
     try:
         obj_goods = market.getGoods()
 
@@ -112,6 +140,14 @@ async def offers():
 
 @app.post("/password/{password}/buy")
 async def buy(data: GoodModel, request: Request, password: str):
+    """
+    @brief Buying goods
+    @param Gooddata containing name and quantity
+    @param Current Userdata
+    @param Users password
+    @return Inventory and Balance
+    @throws HTTPException 500 if buying good fails
+    """
     try:
         print(f"DEBUG: Trying to buy {data.goodname}")
 
@@ -153,6 +189,14 @@ async def buy(data: GoodModel, request: Request, password: str):
 
 @app.post("/password/{password}/sell")
 async def sell(data: GoodModel, request: Request, password: str):
+    """
+    @brief Selling goods
+    @param Gooddata containing name and quantity
+    @param Current Userdata
+    @param Users password
+    @return Inventory and Balance
+    @throws HTTPException 500 if selling good fails
+    """
     try:
         print(f"DEBUG: Trying to sell {data.goodname}")
 
@@ -187,6 +231,12 @@ async def sell(data: GoodModel, request: Request, password: str):
 
 @app.post("/logout")
 async def logout(request: Request):
+    """
+    @brief Logging user out
+    @param Current Userdata
+    @return Status message
+    @throws HTTPException 500 if logging out fails
+    """
     try:
         username = request.headers.get("username")        
         print(f"DEBUG: {username} trying to logout")
