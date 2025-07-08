@@ -95,13 +95,14 @@ async def prices():
     except Exception as e:
         print(f"ERROR updating prices: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to update prices: {str(e)}")
+    
 
 @app.get("/offers")
 async def offers():
     try:
-        goods = market.getOffers()
+        goods = market.getGoods()
 
-        return {"offers": goods}
+        return {"goods": goods}
     except Exception as e:
         print(f"ERROR showing offers: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to show offers: {str(e)}")
@@ -118,7 +119,7 @@ async def buy(data: BuyGood, request: Request):
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
-        price = good.getCurrentPrice(data.goodId)    #parameter in hpp
+        price = good.getCurrentPrice(data.goodId)    #in hpp ohne parameter
         amount = price*data.quantity
         if account.hasEnoughBalance(amount) == False:
             print("DEBUG: Not enough money")
@@ -167,9 +168,13 @@ async def sell(data: SellGood, request: Request):
         print(f"ERROR selling good: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to sell good: {str(e)}")
 
+#authenticate in buy and sell? zusätzliche passwortabfrage, ja
+#nicht zweimal speichern lieber in nur in c++
 #logout?
+#buy genügend güter im markt
 #nicht goodid, sondern name?
 #klassen buygood und sellgood zu einer?
+#offers überarbeiten
 
 if __name__ == '__main__':
     uvicorn.run("fastapi_server:app", host="127.0.0.1", port=8000, reload=True)
