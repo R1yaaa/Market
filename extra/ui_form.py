@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'form.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.4.2
+## Created by: Qt User Interface Compiler version 6.9.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QHeaderView, QLabel, QLineEdit,
-    QPushButton, QSizePolicy, QSpinBox, QStackedWidget,
-    QTableWidget, QTableWidgetItem, QWidget)
+    QPushButton, QSizePolicy, QStackedWidget, QTableWidget,
+    QTableWidgetItem, QWidget)
 
 class Ui_Widget(object):
     def setupUi(self, Widget):
@@ -71,7 +71,7 @@ class Ui_Widget(object):
         self.tableGueter.setObjectName(u"tableGueter")
         self.tableGueter.setGeometry(QRect(10, 60, 981, 471))
         self.tableGueter.setColumnCount(6)
-        self.tableGueter.verticalHeader().setProperty("showSortIndicator", False)
+        self.tableGueter.verticalHeader().setProperty(u"showSortIndicator", False)
         self.tableGueter.verticalHeader().setStretchLastSection(False)
         self.pushButtonLogout = QPushButton(self.pageMarket)
         self.pushButtonLogout.setObjectName(u"pushButtonLogout")
@@ -112,9 +112,6 @@ class Ui_Widget(object):
         self.pushButtonZurueck = QPushButton(self.pageInventar)
         self.pushButtonZurueck.setObjectName(u"pushButtonZurueck")
         self.pushButtonZurueck.setGeometry(QRect(1060, 10, 101, 41))
-        self.pushButtonSell = QPushButton(self.pageInventar)
-        self.pushButtonSell.setObjectName(u"pushButtonSell")
-        self.pushButtonSell.setGeometry(QRect(940, 10, 101, 41))
         self.labelCoins_2 = QLabel(self.pageInventar)
         self.labelCoins_2.setObjectName(u"labelCoins_2")
         self.labelCoins_2.setGeometry(QRect(410, 10, 61, 21))
@@ -138,40 +135,16 @@ class Ui_Widget(object):
         self.label_8.setObjectName(u"label_8")
         self.label_8.setGeometry(QRect(600, 10, 191, 31))
         self.stackedWidget.addWidget(self.pageInventar)
-        self.pageVerkaufen = QWidget()
-        self.pageVerkaufen.setObjectName(u"pageVerkaufen")
-        self.lineEditGoodName = QLineEdit(self.pageVerkaufen)
-        self.lineEditGoodName.setObjectName(u"lineEditGoodName")
-        self.lineEditGoodName.setGeometry(QRect(500, 110, 211, 31))
-        self.lineEditVerkaufPreis = QLineEdit(self.pageVerkaufen)
-        self.lineEditVerkaufPreis.setObjectName(u"lineEditVerkaufPreis")
-        self.lineEditVerkaufPreis.setGeometry(QRect(500, 180, 211, 31))
-        self.spinBoxAnzahl = QSpinBox(self.pageVerkaufen)
-        self.spinBoxAnzahl.setObjectName(u"spinBoxAnzahl")
-        self.spinBoxAnzahl.setGeometry(QRect(500, 250, 61, 26))
-        self.label = QLabel(self.pageVerkaufen)
-        self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(390, 120, 101, 16))
-        self.label_2 = QLabel(self.pageVerkaufen)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(390, 190, 101, 16))
-        self.label_3 = QLabel(self.pageVerkaufen)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setGeometry(QRect(390, 250, 58, 16))
-        self.pushButtonAngebot = QPushButton(self.pageVerkaufen)
-        self.pushButtonAngebot.setObjectName(u"pushButtonAngebot")
-        self.pushButtonAngebot.setGeometry(QRect(490, 330, 171, 41))
-        self.label_10 = QLabel(self.pageVerkaufen)
-        self.label_10.setObjectName(u"label_10")
-        self.label_10.setGeometry(QRect(390, 420, 371, 31))
-        self.stackedWidget.addWidget(self.pageVerkaufen)
+        self.loeschen = QWidget()
+        self.loeschen.setObjectName(u"loeschen")
+        self.stackedWidget.addWidget(self.loeschen)
         self.lschen = QWidget()
         self.lschen.setObjectName(u"lschen")
         self.stackedWidget.addWidget(self.lschen)
 
         self.retranslateUi(Widget)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(4)
 
 
         QMetaObject.connectSlotsByName(Widget)
@@ -211,7 +184,6 @@ class Ui_Widget(object):
         ___qtablewidgetitem9.setText(QCoreApplication.translate("Widget", u"verkaufen", None));
         self.label_6.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:16pt;\">Inventar</span></p></body></html>", None))
         self.pushButtonZurueck.setText(QCoreApplication.translate("Widget", u"zur\u00fcck", None))
-        self.pushButtonSell.setText(QCoreApplication.translate("Widget", u"verkaufen", None))
         self.labelCoins_2.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">zb 100</span></p></body></html>", None))
         self.label_7.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">coins:</span></p></body></html>", None))
         ___qtablewidgetitem10 = self.tableWidget.horizontalHeaderItem(0)
@@ -226,10 +198,5 @@ class Ui_Widget(object):
         self.label_8.setToolTip(QCoreApplication.translate("Widget", u"<html><head/><body><p><br/></p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.label_8.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Meine Angebote</span></p></body></html>", None))
-        self.label.setText(QCoreApplication.translate("Widget", u"Name des Guts:", None))
-        self.label_2.setText(QCoreApplication.translate("Widget", u"Preis pro St\u00fcck:", None))
-        self.label_3.setText(QCoreApplication.translate("Widget", u"Anzahl:", None))
-        self.pushButtonAngebot.setText(QCoreApplication.translate("Widget", u"Angebot erstellen", None))
-        self.label_10.setText(QCoreApplication.translate("Widget", u"TextLabel", None))
     # retranslateUi
 

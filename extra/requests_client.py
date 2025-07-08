@@ -6,7 +6,7 @@ from PySide6 import QtWidgets
 from ui_form import Ui_Widget
 import sys
 
-#BASE = "http://localhost:8000"
+BASE = "http://localhost:8000"
 
 #pyside6-uic form.ui -o ui_form.py um py Datei zu erstellen
 
@@ -46,8 +46,17 @@ class MainWindow(QWidget):
         #self.setup_markttabelle()
 
     def login(self):
-        name = self.ui.lineEditUsername.text()
-        if name:
+
+        username = self.ui.lineEditUsername.text()
+        password = self.ui.lineEditPassword.text()
+
+        #response = requests.post(f"{BASE}/register", json={"username" : username, "password" : "password"})
+    
+        #if response.status_code != 200:
+            #print(response.json().get("detail"))
+            
+
+        if username:
             self.ui.labelCoins.setText("100.00")
             self.ui.stackedWidget.setCurrentWidget(self.ui.pageMarket)
         else:
