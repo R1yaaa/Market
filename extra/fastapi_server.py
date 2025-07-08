@@ -30,12 +30,11 @@ async def register(user: UserModel):
     try:
         print(f"DEBUG: User {user.username} trying to register")
 
-        if user.username in accounts:
+        if market.getUser(user.username) != None:
             print(f"DEBUG: User {user.username} exists already")
             raise HTTPException(status_code=406, detail="User already registered or occupied username")
         
         market.registerUser(user.username, user.password)
-        accounts[user.username] = {"password": user.password}
 
         print(f"DEBUG: User {user.username} registered successfully")
 
@@ -46,7 +45,7 @@ async def register(user: UserModel):
 
 
 @app.post("/login")
-async def login(user: UserModel):
+async def login(data: UserModel):
     """
     @brief Login User
     @param Userdata containing username and password
@@ -54,22 +53,21 @@ async def login(user: UserModel):
     @throws HTTPException 500 if logging in fails
     """
     try:
-        print(f"DEBUG: User {user.username} trying to login")
+        print(f"DEBUG: User {data.username} trying to login")
 
-        if user.username not in accounts:
-            print(f"DEBUG: User {user.username} not found in accounts dict")
+        if market.getUser(data.username) == None:
+            print(f"DEBUG: User {data.username} not found")
             raise HTTPException(status_code=404, detail="User not found")
         
-        user_obj = accounts.get(user.username)
-        if user_obj["password"] != user.password:
-            print(f"DEBUG: {user.password} is not the same password")
+        if not user.authenticate(data.username, data.password): #in hpp ohne username parameter
+            print(f"DEBUG: {data.password} is not the right password")
             raise HTTPException(status_code=400, detail="incorrect password")
         
-        market.loginUser(user.username, user.password)
+        market.loginUser(data.username, data.password)
 
-        print(f"DEBUG: User {user.username} logged in successfully")
+        print(f"DEBUG: User {data.username} logged in successfully")
 
-        return {"message": f"{user.username} logged in"}
+        return {"message": f"{data.username} logged in"}
     except Exception as e:
         print(f"ERROR logging in: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to login: {str(e)}")
@@ -84,9 +82,8 @@ async def accountinfo(username: str):
     @throws HTTPException 500 if showing account fails
     """
     try:
-        user_obj = accounts.get(username)
-        if not user_obj:
-            print(f"DEBUG: {username} not found in accounts dict")
+        if market.getUser(username) == None:
+            print(f"DEBUG: {username} not found")
             raise HTTPException(status_code=404, detail="User not found")
         
         balance = account.getBalance(username)  #kein parameter in hpp
@@ -248,7 +245,6 @@ async def logout(request: Request):
         print(f"ERROR logging out: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to logout: {str(e)}")
 
-#nicht zweimal speichern lieber nur in c++
 
 if __name__ == '__main__':
     uvicorn.run("fastapi_server:app", host="127.0.0.1", port=8000, reload=True)
