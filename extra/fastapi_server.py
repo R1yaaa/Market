@@ -8,7 +8,6 @@ from unolib import Market, Account, User, Good
 
 app = FastAPI()
 
-accounts: Dict[str, str] = {} #Name und Passwort speichern
 
 class UserModel(BaseModel):
     username: str
