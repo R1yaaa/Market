@@ -14,9 +14,9 @@ public:
     
     /**
      * @brief Konstruiert ein neues Konto
-     * @param initial_balance Startguthaben (Standard: 0.0 POOSE-Coins)
+     * @param initial_balance Startguthaben (Standard: 1000.0 POOSE-Coins)
      */
-    Account(double initial_balance = 0.0);
+    Account(double initial_balance = 1000.0);
     
     // Kontooperationen
     
@@ -25,10 +25,6 @@ public:
      * @param amount Abzuhebender Betrag
      * @return true bei Erfolg, false wenn nicht genügend Guthaben
      *
-     * Beispiel:
-     * @code
-     * account->withdraw(50.0); // Hebt 50 POOSE-Coins ab
-     * @endcode
      */
     bool withdraw(double amount);
     
@@ -53,12 +49,6 @@ public:
      * @param amount Benötigter Betrag
      * @return true wenn Kontostand >= amount, sonst false
      *
-     * Beispiel für Handelsprüfung:
-     * @code
-     * if(account->hasEnoughBalance(purchase_total)) {
-     *     // Kauf durchführen
-     * }
-     * @endcode
      */
     bool hasEnoughBalance(double amount) const;
 
