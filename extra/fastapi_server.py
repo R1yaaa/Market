@@ -108,8 +108,8 @@ async def offers():
         raise HTTPException(status_code=500, detail=f"Failed to show offers: {str(e)}")
 
 
-@app.post("/buy")
-async def buy(data: BuyGood, request: Request):
+@app.post("/password/{password}/buy")
+async def buy(data: BuyGood, request: Request, password: str):
     try:
         print(f"DEBUG: Trying to buy {data.goodId}")
 
@@ -119,9 +119,13 @@ async def buy(data: BuyGood, request: Request):
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
+        if not user.authenticate(password):
+            print("DEBUG: Wrong password")
+            raise HTTPException(status_code=406, detail="Incorrect password")
+
         price = good.getCurrentPrice(data.goodId)    #in hpp ohne parameter
         amount = price*data.quantity
-        if account.hasEnoughBalance(amount) == False:
+        if not account.hasEnoughBalance(amount):
             print("DEBUG: Not enough money")
             raise HTTPException(status_code=400, detail="Not enough money")
         
@@ -139,8 +143,8 @@ async def buy(data: BuyGood, request: Request):
         raise HTTPException(status_code=500, detail=f"Failed to buy good: {str(e)}")
 
 
-@app.post("/sell")
-async def sell(data: SellGood, request: Request):
+@app.post("/password/{password}/sell")
+async def sell(data: SellGood, request: Request, password: str):
     try:
         print(f"DEBUG: Trying to sell {data.goodId}")
 
@@ -149,6 +153,10 @@ async def sell(data: SellGood, request: Request):
         if market.getGood(data.goodId) == None:
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
+
+        if not user.authenticate(password):
+            print("DEBUG: Wrong password")
+            raise HTTPException(status_code=406, detail="Incorrect password")
 
         anzahl = user.getGoodQuantity(data.goodId)
         if data.quantity > anzahl:
@@ -168,13 +176,28 @@ async def sell(data: SellGood, request: Request):
         print(f"ERROR selling good: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to sell good: {str(e)}")
 
-#authenticate in buy and sell? zusätzliche passwortabfrage, ja
-#nicht zweimal speichern lieber in nur in c++
+@app.post("/logout")
+async def logout(request: Request):
+    try:
+        username = request.headers.get("username")        
+        print(f"DEBUG: {username} trying to logout")
+
+        market.logout()
+
+        return {"message":f"{username} logged out"}
+    except Exception as e:
+        print(f"ERROR logging out: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to logout: {str(e)}")
+
+#nicht zweimal speichern lieber nur in c++
 #logout?
 #buy genügend güter im markt
+#woher weiß cpp welcher user? buy und sell
 #nicht goodid, sondern name?
 #klassen buygood und sellgood zu einer?
-#offers überarbeiten
+#doxygen
+
+#pybind
 
 if __name__ == '__main__':
     uvicorn.run("fastapi_server:app", host="127.0.0.1", port=8000, reload=True)
