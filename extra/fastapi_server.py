@@ -8,7 +8,6 @@ from unolib import Market, Account, User, Good
 
 app = FastAPI()
 
-
 class UserModel(BaseModel):
     username: str
     password: str
