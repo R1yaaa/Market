@@ -42,23 +42,14 @@ public:
      * @brief Gibt Zugriff auf das Nutzerkonto
      * @return Shared Pointer zum Account-Objekt
      *
-     * Ermöglicht Kontotransaktionen:
-     * @code
-     * user->getAccount()->deposit(100.0);
-     * @endcode
      */
+     
     std::shared_ptr<Account> getAccount();
     
     /**
      * @brief Gibt das gesamte Inventar zurück
      * @return Konstante Referenz zur Inventory-Map (goodId -> Menge)
      *
-     * Beispiel für Inventardurchlauf:
-     * @code
-     * for (const auto& [id, qty] : user.getInventory()) {
-     *     std::cout << "Gut #" << id << ": " << qty << " Einheiten\n";
-     * }
-     * @endcode
      */
     const std::unordered_map<int, int>& getInventory() const;
     
@@ -69,10 +60,6 @@ public:
      * @param goodId ID des hinzuzufügenden Guts
      * @param quantity Menge (Standard: 1)
      *
-     * Beispiel für Masseneinzug:
-     * @code
-     * user.addGood(3, 5); // Fügt 5 Einheiten von Gut #3 hinzu
-     * @endcode
      */
     void addGood(int goodId, int quantity = 1);
     
