@@ -15,7 +15,7 @@ class UserModel(BaseModel):
     password: str
 
 class GoodModel(BaseModel):
-    goodId: str
+    goodname: str
     quantity: int
    
 
@@ -108,11 +108,12 @@ async def offers():
 @app.post("/password/{password}/buy")
 async def buy(data: GoodModel, request: Request, password: str):
     try:
-        print(f"DEBUG: Trying to buy {data.goodId}")
+        print(f"DEBUG: Trying to buy {data.goodname}")
 
         username = request.headers.get("username")
 
-        if market.getGood(data.goodId) == None:
+        goodId = good.getId(data.goodname)    #in hpp ohne parameter
+        if market.getGood(goodId) == None:
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
@@ -120,13 +121,13 @@ async def buy(data: GoodModel, request: Request, password: str):
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
-        price = good.getCurrentPrice(data.goodId)    #in hpp ohne parameter
+        price = good.getCurrentPrice(goodId)    #in hpp ohne parameter
         amount = price*data.quantity
         if not account.hasEnoughBalance(amount):
             print("DEBUG: Not enough money")
             raise HTTPException(status_code=400, detail="Not enough money")
         
-        market.buyGood(data.goodId, data.quantity)
+        market.buyGood(goodId, data.quantity)
 
         balance = account.getBalance()
         inventory = user.getInventory()
@@ -143,10 +144,11 @@ async def buy(data: GoodModel, request: Request, password: str):
 @app.post("/password/{password}/sell")
 async def sell(data: GoodModel, request: Request, password: str):
     try:
-        print(f"DEBUG: Trying to sell {data.goodId}")
+        print(f"DEBUG: Trying to sell {data.goodname}")
 
         username = request.headers.get("username")
 
+        goodId = good.getId(data.goodname)    #in hpp ohne parameter
         if market.getGood(data.goodId) == None:
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
@@ -155,12 +157,12 @@ async def sell(data: GoodModel, request: Request, password: str):
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
-        anzahl = user.getGoodQuantity(data.goodId)
+        anzahl = user.getGoodQuantity(goodId)
         if data.quantity > anzahl:
             print("DEBUG: Not enough in inventory")
             raise HTTPException(status_code=400, detail="Not enough goods in the inventory")
 
-        market.sellGood(data.goodId, data.quantity) #methode in hpp hinzufügen
+        market.sellGood(goodId, data.quantity) #methode in hpp hinzufügen
 
         balance = account.getBalance()
         inventory = user.getInventory()
@@ -189,8 +191,6 @@ async def logout(request: Request):
 #nicht zweimal speichern lieber nur in c++
 #buy genügend güter im markt
 #woher weiß cpp welcher user? buy und sell
-#nicht goodid, sondern name?
-#klassen buygood und sellgood zu einer?
 #doxygen
 
 #pybind
