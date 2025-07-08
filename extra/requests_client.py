@@ -23,6 +23,9 @@ class MainWindow(QWidget):
         # Nach dem Start Login-Seite anzeigen
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageLogin)
 
+        username = self.ui.lineEditUsername.text()
+        password = self.ui.lineEditPassword.text()
+
         # Login verbinden
         self.ui.pushButtonLogin.clicked.connect(self.login)
 
@@ -45,27 +48,40 @@ class MainWindow(QWidget):
         # Tabelle konfigurieren
         #self.setup_markttabelle()
 
-    def login(self):
+    def login(self, username, password):
+
+        response = requests.post(f"{BASE}/login", json={"username" : username, "password" : "password"})
+    
+        if response.status_code != 200:
+            print(response.json().get("detail"))
+            return None
+        
+        else: 
+
+            #self.ui.labelCoins.setText(account balance?)
+            data = response.json()
+            self.ui.labelStatus.setText(data["message"])
+            self.ui.stackedWidget.setCurrentWidget(self.ui.pageMarket)
+
+
+
+
+
+    def register(self, username, password):
 
         username = self.ui.lineEditUsername.text()
         password = self.ui.lineEditPassword.text()
 
-        #response = requests.post(f"{BASE}/register", json={"username" : username, "password" : "password"})
+        response = requests.post(f"{BASE}/register", json={"username" : username, "password" : "password"})
     
-        #if response.status_code != 200:
-            #print(response.json().get("detail"))
+        if response.status_code != 200:
+            print(response.json().get("detail"))
             
-
-        if username:
-            self.ui.labelCoins.setText("100.00")
-            self.ui.stackedWidget.setCurrentWidget(self.ui.pageMarket)
         else:
-            self.ui.labelStatus.setText("Bitte Namen eingeben")
-
-
-
-    def register(self):
-        self.ui.stackedWidget.setCurrentWidget(self.ui.pageMarket)
+            #self.ui.labelCoins.setText(account balance?)
+            data = response.json()
+            self.ui.labelStatus.setText(data["message"])
+            self.ui.stackedWidget.setCurrentWidget(self.ui.pageMarket)
 
 
 
@@ -80,9 +96,21 @@ class MainWindow(QWidget):
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageMarket)
 
 
+    def accountinfo(username):
+
+        response = requests.post(f"{BASE}/register", json={"username"})
+
+        if response.status_code != 200:
+            print(response.json().get("detail"))
+
+        else:
+            data = response.json()
+            return data["balance"], data["inventory"]
+
+
+
     #def setup_inventartabelle(self):
 
-    #def setup_offertabelle(self):
 
     def setup_markttabelle(self):
         table = self.ui.tableMarkt
@@ -105,11 +133,12 @@ class MainWindow(QWidget):
             button.clicked.connect(lambda _, row=i: self.kaufen(row))
             table.setCellWidget(i, 3, button)
 
-    def kaufen(self, zeile):
+    def buy(self, zeile):
         name = self.ui.tableMarkt.item(zeile, 0).text()
         print(f"Gekauft: {name}")
         # später REST-Request senden
 
+    def sell(self):
 
 
 
