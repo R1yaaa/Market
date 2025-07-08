@@ -147,10 +147,10 @@ class Ui_Widget(object):
         self.label_6.setMaximumSize(QSize(161, 31))
         self.labelCoins_2 = QLabel(self.pageInventar)
         self.labelCoins_2.setObjectName(u"labelCoins_2")
-        self.labelCoins_2.setGeometry(QRect(950, 20, 61, 21))
+        self.labelCoins_2.setGeometry(QRect(930, 20, 91, 21))
         self.label_7 = QLabel(self.pageInventar)
         self.label_7.setObjectName(u"label_7")
-        self.label_7.setGeometry(QRect(890, 20, 51, 21))
+        self.label_7.setGeometry(QRect(870, 20, 51, 21))
         self.pushButtonSell = QPushButton(self.pageInventar)
         self.pushButtonSell.setObjectName(u"pushButtonSell")
         self.pushButtonSell.setGeometry(QRect(920, 470, 121, 41))
@@ -192,7 +192,7 @@ class Ui_Widget(object):
 
         self.retranslateUi(Widget)
 
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(Widget)
@@ -222,7 +222,7 @@ class Ui_Widget(object):
         self.label.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Username</span></p></body></html>", None))
         self.label_2.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Password</span></p></body></html>", None))
         self.label_3.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Bitte erstmal Authentifizierungsdaten eingeben, </span></p><p><span style=\" font-size:14pt;\">dann einen G\u00fcter ausw\u00e4hlen und dann auf </span></p><p><span style=\" font-size:14pt;\">kaufen klicken.</span></p></body></html>", None))
-        self.labelBuyInfo.setText(QCoreApplication.translate("Widget", u"TextLabel", None))
+        self.labelBuyInfo.setText("")
         self.label_11.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Anzahl</span></p></body></html>", None))
         ___qtablewidgetitem4 = self.tableWidgetInventory.horizontalHeaderItem(0)
         ___qtablewidgetitem4.setText(QCoreApplication.translate("Widget", u"Name", None));
@@ -234,9 +234,9 @@ class Ui_Widget(object):
         ___qtablewidgetitem7.setText(QCoreApplication.translate("Widget", u"ID", None));
         self.label_6.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:16pt; font-weight:600;\">Inventar</span></p></body></html>", None))
         self.labelCoins_2.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">zb 100</span></p></body></html>", None))
-        self.label_7.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">coins:</span></p></body></html>", None))
+        self.label_7.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Coins:</span></p></body></html>", None))
         self.pushButtonSell.setText(QCoreApplication.translate("Widget", u"Verkaufen", None))
-        self.labelSellInfo.setText(QCoreApplication.translate("Widget", u"TextLabel", None))
+        self.labelSellInfo.setText("")
         self.label_8.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Bitte erstmal Authentifizierungsdaten eingeben, </span></p><p><span style=\" font-size:14pt;\">dann einen G\u00fcter ausw\u00e4hlen und dann auf </span></p><p><span style=\" font-size:14pt;\">verkaufen klicken.</span></p></body></html>", None))
         self.label_9.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Username</span></p></body></html>", None))
         self.label_10.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Password</span></p></body></html>", None))

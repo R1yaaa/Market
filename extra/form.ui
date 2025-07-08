@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="pageLogin">
     <widget class="QPushButton" name="pushButtonLogin">
@@ -327,7 +327,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string/>
      </property>
     </widget>
     <widget class="QSpinBox" name="spinBoxBuy">
@@ -427,9 +427,9 @@
     <widget class="QLabel" name="labelCoins_2">
      <property name="geometry">
       <rect>
-       <x>950</x>
+       <x>930</x>
        <y>20</y>
-       <width>61</width>
+       <width>91</width>
        <height>21</height>
       </rect>
      </property>
@@ -440,14 +440,14 @@
     <widget class="QLabel" name="label_7">
      <property name="geometry">
       <rect>
-       <x>890</x>
+       <x>870</x>
        <y>20</y>
        <width>51</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;coins:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Coins:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtonSell">
@@ -473,7 +473,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string/>
      </property>
     </widget>
     <widget class="QLabel" name="label_8">
