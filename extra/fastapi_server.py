@@ -251,8 +251,6 @@ async def logout(request: Request):
     except Exception as e:
         print(f"ERROR logging out: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to logout: {str(e)}")
-    
-#request?
 
 
 if __name__ == '__main__':
