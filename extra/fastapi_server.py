@@ -71,7 +71,7 @@ async def login(data: UserModel):
         raise HTTPException(status_code=500, detail=f"Failed to login: {str(e)}")
     
 
-@app.get("/user/{username}/accountinfo")
+@app.get("/{username}/accountinfo")
 async def accountinfo(username: str):
     """
     @brief Useraccount Info
@@ -133,7 +133,7 @@ async def offers():
         raise HTTPException(status_code=500, detail=f"Failed to show offers: {str(e)}")
 
 
-@app.post("/password/{password}/buy")
+@app.post("/{password}/buy")
 async def buy(data: GoodModel, request: Request, password: str):
     """
     @brief Buying goods
@@ -182,7 +182,7 @@ async def buy(data: GoodModel, request: Request, password: str):
         raise HTTPException(status_code=500, detail=f"Failed to buy good: {str(e)}")
 
 
-@app.post("/password/{password}/sell")
+@app.post("/{password}/sell")
 async def sell(data: GoodModel, request: Request, password: str):
     """
     @brief Selling goods
@@ -242,6 +242,8 @@ async def logout(request: Request):
     except Exception as e:
         print(f"ERROR logging out: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to logout: {str(e)}")
+    
+#request?
 
 
 if __name__ == '__main__':
