@@ -89,7 +89,10 @@ async def accountinfo(username: str):
 
         return {
             "balance": balance,
-            "inventory": inventory
+            "ID": inventory.getId,
+            "Name": inventory.getName,
+            "Price": inventory.getPrice,
+            "Quantity": inventory.getQuantity
         }
     except Exception as e:
         print(f"ERROR showing account: {e}")
@@ -174,8 +177,11 @@ async def buy(data: GoodModel, request: Request, password: str):
         inventory = user.getInventory(username) #in hpp ohne parameter
 
         return {
-            "inventory":inventory,
-            "balance":balance
+            "balance": balance,
+            "ID": inventory.getId,
+            "Name": inventory.getName,
+            "Price": inventory.getPrice,
+            "Quantity": inventory.getQuantity
         }
     except Exception as e:
         print(f"ERROR buying good: {e}")
@@ -217,8 +223,11 @@ async def sell(data: GoodModel, request: Request, password: str):
         inventory = user.getInventory(username) #in hpp ohne parameter
 
         return {
-                "inventory":inventory,
-                "balance":balance
+            "balance": balance,
+            "ID": inventory.getId,
+            "Name": inventory.getName,
+            "Price": inventory.getPrice,
+            "Quantity": inventory.getQuantity
             }
     except Exception as e:
         print(f"ERROR selling good: {e}")
