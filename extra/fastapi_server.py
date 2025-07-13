@@ -14,6 +14,7 @@ class UserModel(BaseModel):
 
 class GoodModel(BaseModel):
     goodname: str
+    goodid: int
     quantity: int
    
 
@@ -149,12 +150,11 @@ async def buy(data: GoodModel, userdata: UserModel):
     try:
         print(f"DEBUG: Trying to buy {data.goodname}")
 
-        goodId = good.getId(data.goodname)    #in hpp ohne parameter
-        if market.getGood(goodId) == None:
+        if market.getGood(data.goodid) == None:
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
-        restquantity = good.getQuantity(goodId) #in hpp ohne parameter
+        restquantity = good.getQuantity(data.goodid) #in hpp ohne parameter
         if data.quantity > restquantity:
             print("DEBUG: Not enough goods left")
             raise HTTPException(status_code=400, detail="Not enough goods in the market left")
@@ -163,13 +163,13 @@ async def buy(data: GoodModel, userdata: UserModel):
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
-        price = good.getCurrentPrice(goodId)    #in hpp ohne parameter
+        price = good.getCurrentPrice(data.goodid)    #in hpp ohne parameter
         amount = price*data.quantity
         if not account.hasEnoughBalance(userdata.username, amount):  #in hpp ohne username parameter
             print("DEBUG: Not enough money")
             raise HTTPException(status_code=400, detail="Not enough money")
         
-        market.buyGood(userdata.username, goodId, data.quantity) #in hpp ohne username parameter
+        market.buyGood(userdata.username, data.goodid, data.quantity) #in hpp ohne username parameter
 
         balance = account.getBalance(userdata.username)  #in hpp ohne parameter
         inventory = user.getInventory(userdata.username) #in hpp ohne parameter
@@ -199,8 +199,7 @@ async def sell(data: GoodModel, userdata: UserModel):
     try:
         print(f"DEBUG: Trying to sell {data.goodname}")
 
-        goodId = good.getId(data.goodname)    #in hpp ohne parameter
-        if market.getGood(data.goodId) == None:
+        if market.getGood(data.goodid) == None:
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
@@ -208,12 +207,12 @@ async def sell(data: GoodModel, userdata: UserModel):
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
-        anzahl = user.getGoodQuantity(userdata.username, goodId) #in hpp ohne username parameter
+        anzahl = user.getGoodQuantity(userdata.username, data.goodid) #in hpp ohne username parameter
         if data.quantity > anzahl:
             print("DEBUG: Not enough in inventory")
             raise HTTPException(status_code=400, detail="Not enough goods in the inventory")
 
-        market.sellGood(userdata.username, goodId, data.quantity)    #in hpp ohne username parameter
+        market.sellGood(userdata.username, data.goodid, data.quantity)    #in hpp ohne username parameter
 
         balance = account.getBalance(userdata.username)  #in hpp ohne parameter
         inventory = user.getInventory(userdata.username) #in hpp ohne parameter
