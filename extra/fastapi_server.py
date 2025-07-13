@@ -18,7 +18,7 @@ class GoodModel(BaseModel):
    
 
 @app.post("/register")
-async def register(user: UserModel):
+async def register(userdata: UserModel):
     """
     @brief Register User
     @param Userdata containing username and password
@@ -26,24 +26,24 @@ async def register(user: UserModel):
     @throws HTTPException 500 if registering fails
     """
     try:
-        print(f"DEBUG: User {user.username} trying to register")
+        print(f"DEBUG: User {userdata.username} trying to register")
 
-        if market.getUser(user.username) != None:
-            print(f"DEBUG: User {user.username} exists already")
+        if market.getUser(userdata.username) != None:
+            print(f"DEBUG: User {userdata.username} exists already")
             raise HTTPException(status_code=406, detail="User already registered or occupied username")
         
-        market.registerUser(user.username, user.password)
+        market.registerUser(userdata.username, userdata.password)
 
-        print(f"DEBUG: User {user.username} registered successfully")
+        print(f"DEBUG: User {userdata.username} registered successfully")
 
-        return {"message": f"{user.username} registered"}
+        return {"message": f"{userdata.username} registered"}
     except Exception as e:
         print(f"ERROR registering: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to register: {str(e)}")
 
 
 @app.post("/login")
-async def login(data: UserModel):
+async def login(userdata: UserModel):
     """
     @brief Login User
     @param Userdata containing username and password
@@ -51,21 +51,21 @@ async def login(data: UserModel):
     @throws HTTPException 500 if logging in fails
     """
     try:
-        print(f"DEBUG: User {data.username} trying to login")
+        print(f"DEBUG: User {userdata.username} trying to login")
 
-        if market.getUser(data.username) == None:
-            print(f"DEBUG: User {data.username} not found")
+        if market.getUser(userdata.username) == None:
+            print(f"DEBUG: User {userdata.username} not found")
             raise HTTPException(status_code=404, detail="User not found")
         
-        if not user.authenticate(data.username, data.password): #in hpp ohne username parameter
-            print(f"DEBUG: {data.password} is not the right password")
+        if not user.authenticate(userdata.username, userdata.password): #in hpp ohne username parameter
+            print(f"DEBUG: {userdata.password} is not the right password")
             raise HTTPException(status_code=400, detail="incorrect password")
         
-        market.loginUser(data.username, data.password)
+        market.loginUser(userdata.username, userdata.password)
 
-        print(f"DEBUG: User {data.username} logged in successfully")
+        print(f"DEBUG: User {userdata.username} logged in successfully")
 
-        return {"message": f"{data.username} logged in"}
+        return {"message": f"{userdata.username} logged in"}
     except Exception as e:
         print(f"ERROR logging in: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to login: {str(e)}")
@@ -137,7 +137,7 @@ async def offers():
 
 
 @app.post("/{password}/buy")
-async def buy(data: GoodModel, request: Request, password: str):
+async def buy(data: GoodModel, userdata: UserModel):
     """
     @brief Buying goods
     @param Gooddata containing name and quantity
@@ -149,8 +149,6 @@ async def buy(data: GoodModel, request: Request, password: str):
     try:
         print(f"DEBUG: Trying to buy {data.goodname}")
 
-        username = request.headers.get("username")
-
         goodId = good.getId(data.goodname)    #in hpp ohne parameter
         if market.getGood(goodId) == None:
             print("DEBUG: Good does not exist")
@@ -161,20 +159,20 @@ async def buy(data: GoodModel, request: Request, password: str):
             print("DEBUG: Not enough goods left")
             raise HTTPException(status_code=400, detail="Not enough goods in the market left")
 
-        if not user.authenticate(username, password):    #in hpp ohne username parameter
+        if not user.authenticate(userdata.username, userdata.password):    #in hpp ohne username parameter
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
         price = good.getCurrentPrice(goodId)    #in hpp ohne parameter
         amount = price*data.quantity
-        if not account.hasEnoughBalance(username, amount):  #in hpp ohne username parameter
+        if not account.hasEnoughBalance(userdata.username, amount):  #in hpp ohne username parameter
             print("DEBUG: Not enough money")
             raise HTTPException(status_code=400, detail="Not enough money")
         
-        market.buyGood(username, goodId, data.quantity) #in hpp ohne username parameter
+        market.buyGood(userdata.username, goodId, data.quantity) #in hpp ohne username parameter
 
-        balance = account.getBalance(username)  #in hpp ohne parameter
-        inventory = user.getInventory(username) #in hpp ohne parameter
+        balance = account.getBalance(userdata.username)  #in hpp ohne parameter
+        inventory = user.getInventory(userdata.username) #in hpp ohne parameter
 
         return {
             "balance": balance,
@@ -189,7 +187,7 @@ async def buy(data: GoodModel, request: Request, password: str):
 
 
 @app.post("/{password}/sell")
-async def sell(data: GoodModel, request: Request, password: str):
+async def sell(data: GoodModel, userdata: UserModel):
     """
     @brief Selling goods
     @param Gooddata containing name and quantity
@@ -201,26 +199,24 @@ async def sell(data: GoodModel, request: Request, password: str):
     try:
         print(f"DEBUG: Trying to sell {data.goodname}")
 
-        username = request.headers.get("username")
-
         goodId = good.getId(data.goodname)    #in hpp ohne parameter
         if market.getGood(data.goodId) == None:
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
-        if not user.authenticate(username, password):   #in hpp ohne username parameter
+        if not user.authenticate(userdata.username, userdata.password):   #in hpp ohne username parameter
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
-        anzahl = user.getGoodQuantity(username, goodId) #in hpp ohne username parameter
+        anzahl = user.getGoodQuantity(userdata.username, goodId) #in hpp ohne username parameter
         if data.quantity > anzahl:
             print("DEBUG: Not enough in inventory")
             raise HTTPException(status_code=400, detail="Not enough goods in the inventory")
 
-        market.sellGood(username, goodId, data.quantity)    #in hpp ohne username parameter
+        market.sellGood(userdata.username, goodId, data.quantity)    #in hpp ohne username parameter
 
-        balance = account.getBalance(username)  #in hpp ohne parameter
-        inventory = user.getInventory(username) #in hpp ohne parameter
+        balance = account.getBalance(userdata.username)  #in hpp ohne parameter
+        inventory = user.getInventory(userdata.username) #in hpp ohne parameter
 
         return {
             "balance": balance,
@@ -234,20 +230,19 @@ async def sell(data: GoodModel, request: Request, password: str):
         raise HTTPException(status_code=500, detail=f"Failed to sell good: {str(e)}")
 
 @app.post("/logout")
-async def logout(request: Request):
+async def logout(userdata: UserModel):
     """
     @brief Logging user out
     @param Current Userdata
     @return Status message
     @throws HTTPException 500 if logging out fails
     """
-    try:
-        username = request.headers.get("username")        
-        print(f"DEBUG: {username} trying to logout")
+    try:       
+        print(f"DEBUG: {userdata.username} trying to logout")
 
-        market.logout(username) #in hpp ohne parameter
+        market.logout(userdata.username) #in hpp ohne parameter
 
-        return {"message":f"{username} logged out"}
+        return {"message":f"{userdata.username} logged out"}
     except Exception as e:
         print(f"ERROR logging out: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to logout: {str(e)}")
