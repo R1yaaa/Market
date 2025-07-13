@@ -126,7 +126,22 @@ class MainWindow(QWidget):
 
 
     def logout(self):
+        self.clear_all_inputs()
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageLogin)
+
+
+
+    #Hilfsfunktion
+    def clear_all_inputs(self):
+        for widget in self.findChildren(QtWidgets.QLineEdit):
+            widget.clear()
+
+        for spin in self.findChildren(QtWidgets.QSpinBox):
+            spin.setValue(0)
+
+        self.ui.labelStatus.clear()
+        self.ui.labelSellInfo.clear()
+        self.ui.labelBuyInfo.clear()
 
 
     def inventory(self):
@@ -248,6 +263,9 @@ class MainWindow(QWidget):
             self.load_account()
             self.load_inventory()
             self.load_market()
+
+            self.ui.lineEditBuyPassword.clear()
+            self.ui.lineEditBuyUsername.clear()
         else:
             self.ui.labelBuyInfo.setText(response.json().get("detail", "Kauf fehlgeschlagen"))
         
@@ -286,6 +304,9 @@ class MainWindow(QWidget):
             self.load_account()
             self.load_inventory()
             self.load_market()
+
+            self.ui.lineEditSellPassword.clear()
+            self.ui.lineEditSellUsername.clear()
         
 
 
@@ -386,7 +407,7 @@ def mock_post_func(url, json, *args, **kwargs):
     if "login" in url:
         if json["username"] == "riya" and json["password"] == "1234":
             return MockResponse({"message": "Eingeloggt!"}, 200)
-        return MockResponse({"detail": "Falsches Passwort"}, 400)
+        return MockResponse({"detail": "Falscher Username oder Passwort"}, 400)
     elif "register" in url:
         return MockResponse({"message": "Registriert!"}, 200)
     return MockResponse({}, 404)
