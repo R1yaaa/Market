@@ -15,6 +15,7 @@ BASE = "http://localhost:8000"
 #sudo apt install libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1
 
 
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -49,9 +50,15 @@ class MainWindow(QWidget):
         #Verkaufen Button
         self.ui.pushButtonSell.clicked.connect(self.sell)
 
+
+
+
         #Startwerte
         self.username = ""
         self.password = ""
+
+
+
 
 
         #Timer für Preisupdates
@@ -60,8 +67,8 @@ class MainWindow(QWidget):
         self.timer.start(2000) # alle 2 Sekunden
 
 
-        # Tabelle konfigurieren
-        #self.setup_markttabelle()
+    
+
 
     def login(self):
         self.username = self.ui.lineEditUsername.text()
@@ -73,7 +80,6 @@ class MainWindow(QWidget):
             self.ui.labelStatus.setText(response.json().get("detail"))
             return
 
-        #self.ui.labelCoins.setText(account balance?)
         data = response.json()
         self.ui.labelStatus.setText(data["message"])
 
@@ -96,7 +102,6 @@ class MainWindow(QWidget):
             self.ui.labelStatus.setText(response.json().get("detail"))
             return
             
-        #self.ui.labelCoins.setText(account balance?)
         data = response.json()
         self.ui.labelStatus.setText(data["message"])
         self.load_account()
@@ -104,8 +109,11 @@ class MainWindow(QWidget):
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageMarket)
 
 
+
+
+
     def load_account(self):
-            response = requests.get(f"{BASE}/user/{self.username}/accountinfo")
+            response = requests.get(f"{BASE}//{self.username}/accountinfo", json={self.username})
 
             if response.status_code == 200:
                 balance = response.json()["balance"]        
@@ -121,19 +129,33 @@ class MainWindow(QWidget):
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageLogin)
 
 
-
-
     def inventory(self):
-
-        response = requests.get(f"{BASE}/user/{self.username}/accountinfo")
-
-        if response.status_code == 200:
-            inv = response.json()["inventory"]
-            self.ui.tableWidgetInventory.setRowCount(0)
-
-
+        self.load_inventory()
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageInventar)
 
+
+    def load_inventory(self):
+
+        try:
+            response = requests.get(f"{BASE}/{self.username}/accountinfo")
+
+            if response.status_code == 200:
+                self.ui.tableWidgetInventory.setRowCount(0)
+                inv = response.json()
+
+                for i, (name, preis, menge, gid) in enumerate(zip(
+                    inv["Name"], inv["Price"], inv["QUantity"], inv["ID"]
+                )):
+                    self.ui.tableWidgetInventory.setItem(i, 0, QTableWidgetItem(str(name)))
+                    self.ui.tableWidgetInventory.setItem(i, 1, QTableWidgetItem(str(preis)))
+                    self.ui.tableWidgetInventory.setItem(i, 2, QTableWidgetItem(str(menge)))
+                    self.ui.tableWidgetInventory.setItem(i, 3, QTableWidgetItem(str(gid)))
+                    
+            else:
+                self.ui.labelSellInfo.setText("Fehler beim Laden des Inventars")
+
+        except Exception as e:
+            self.ui.labelSellInfo.setText(f"Fehler: {e}")
 
 
 
@@ -144,9 +166,9 @@ class MainWindow(QWidget):
 
 
 
-    def accountinfo(self, username):                                #bearbeiten!!!!!!
+    def accountinfo(self):                              
 
-        response = requests.post(f"{BASE}/register", json={"username"})
+        response = requests.post(f"{BASE}/{self.username}/accountinfo", json={self.username})
 
         if response.status_code != 200:
             print(response.json().get("detail"))
@@ -154,13 +176,19 @@ class MainWindow(QWidget):
 
         else:
             data = response.json()
-            return data["balance"], data["inventory"]
-
+            balance = data["balance"]
+            inventory = {
+                "ID": data["ID"],
+                "Name" : data["Name"],
+                "Price" : data["Price"],
+                "Quantity" : data["Quantity"]
+            }
+            return balance, inventory
 
 
     def prices(self):
         try:
-            response = requests.post(f"{BASE}/prices")
+            response = requests.get(f"{BASE}/prices")
             self.load_market()
         except Exception:
             pass
@@ -197,16 +225,31 @@ class MainWindow(QWidget):
         
         password = self.ui.lineEditBuyPassword.text()
         menge = self.ui.spinBoxBuy.value()
-        good_id = self.ui.tableGueter.item(zeile, 3).text()
 
-        headers = {"username": self.username}
-        data ={"goodname" : self.ui.tableGueter.item(zeile, 0).text(), "quantity": menge}
-        response = requests.post(f"{BASE}/password/{password}/buy", headers = headers, json=data)
+        good_id = int(self.ui.tableGueter.item(zeile, 3).text())
+        good_name = self.ui.tableGueter.item(zeile, 0).text()
 
-        if response.status_code != 200:
+        payload = {
+            "data": {
+                "goodname": good_name,
+                "goodid" : good_id,
+                "quantity" : menge
+            },
+            "userdata": {
+                "username" : self.username,
+                "password" : password
+            }
+        }
+
+        response = requests.post(f"{BASE}/{password}/buy", json=payload)
+
+        if response.status_code == 200:
             self.ui.labelBuyInfo.setText("Kauf erfolgreich!")
             self.load_account()
-            self.inventory()
+            self.load_inventory()
+            self.load_market()
+        else:
+            self.ui.labelBuyInfo.setText(response.json().get("detail", "Kauf fehlgeschlagen"))
         
 
 
@@ -216,21 +259,33 @@ class MainWindow(QWidget):
             self.ui.labelSellInfo.setText("Bitte Gut auswählen.")
             return
         
-        password = self.ui.lineEditSellPassword
+        password = self.ui.lineEditSellPassword.text()
         menge = self.ui.spinBoxSell.value()
-        goodname = self.ui.tableWidgetInventory.item(zeile, 9).text()
 
-        headers = {"username" : self.username}
-        data = {"goodname" : goodname, "quantity" : menge}
+        good_name = self.ui.tableWidgetInventory.item(zeile, 3).text()
+        good_id = int(self.ui.tableWidgetInventory.item(zeile, 3).text())
 
-        response = requests.post(f"{BASE}/password/{password}/sell", headers = headers, json = data)
+        payload = {
+            "data": {
+                "goodname": good_name,
+                "goodid" : good_id,
+                "quantity" : menge
+            },
+            "userdata": {
+                "username" : self.username,
+                "password" : password
+            }
+        }
+
+        response = requests.post(f"{BASE}/{password}/sell", json=payload)
 
         if response.status_code != 200:
-            self.ui.labelSellInfo.setText(response.json().get("detail"))
+            self.ui.labelSellInfo.setText(response.json().get("detail", "Verkauf fehlgeschlagen."))
         else:
-            self.ui.labelSellInfo.setTet("Verkauf erfolgreich!")
+            self.ui.labelSellInfo.setText("Verkauf erfolgreich!")
             self.load_account()
-            self.inventory()
+            self.load_inventory()
+            self.load_market()
         
 
 
