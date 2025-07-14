@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 #include "user.hpp"
 #include "good.hpp"
@@ -45,9 +46,12 @@ public:
     bool loginUser(const std::string& username, const std::string& password);
     
     /**
-     * @brief Meldet den aktuellen Benutzer ab
+     * @brief Meldet einen spezifischen Benutzer ab
+     * @param username Benutzername
+     * @param password Passwort zur Authentifizierung
+     * @return true bei erfolgreicher Abmeldung, false bei falschen Daten oder User nicht eingeloggt
      */
-    void logout();
+    bool logout(const std::string& username, const std::string& password);
     
     /**
      * @brief Gibt den aktuell eingeloggten Benutzer zurück
@@ -61,6 +65,13 @@ public:
      * @return Shared Pointer zum User (nullptr wenn nicht gefunden)
      */
     std::shared_ptr<User> getUser(const std::string& username);
+    
+    /**
+     * @brief Prüft ob ein Benutzer eingeloggt ist
+     * @param username Benutzername
+     * @return true wenn eingeloggt, false sonst
+     */
+    bool isUserLoggedIn(const std::string& username) const;
     
     // Handelsgüter
     
@@ -114,8 +125,8 @@ public:
 private:
     // Benutzerverwaltung
     std::unordered_map<std::string, std::shared_ptr<User>> users; ///< Alle registrierten User
-    std::shared_ptr<User> current_user; ///< Aktuell eingeloggter User
-
+    std::unordered_set<std::string> logged_in_users; ///< Set der eingeloggten User
+    
     // Marktdaten
     std::vector<std::shared_ptr<Good>> goods; ///< Alle verfügbaren Handelsgüter
     PriceGenerator price_generator; ///< Preisgenerator für Random-Walk
