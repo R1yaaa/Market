@@ -1,0 +1,246 @@
+# -*- coding: utf-8 -*-
+
+################################################################################
+## Form generated from reading UI file 'form.ui'
+##
+## Created by: Qt User Interface Compiler version 6.9.1
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
+
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QApplication, QHeaderView, QLabel, QLineEdit,
+    QPushButton, QSizePolicy, QSpinBox, QStackedWidget,
+    QTableWidget, QTableWidgetItem, QWidget)
+
+class Ui_Widget(object):
+    def setupUi(self, Widget):
+        if not Widget.objectName():
+            Widget.setObjectName(u"Widget")
+        Widget.resize(1183, 600)
+        self.stackedWidget = QStackedWidget(Widget)
+        self.stackedWidget.setObjectName(u"stackedWidget")
+        self.stackedWidget.setGeometry(QRect(9, 9, 1171, 531))
+        self.pageLogin = QWidget()
+        self.pageLogin.setObjectName(u"pageLogin")
+        self.pushButtonLogin = QPushButton(self.pageLogin)
+        self.pushButtonLogin.setObjectName(u"pushButtonLogin")
+        self.pushButtonLogin.setGeometry(QRect(470, 320, 131, 41))
+        self.pushButtonRegister = QPushButton(self.pageLogin)
+        self.pushButtonRegister.setObjectName(u"pushButtonRegister")
+        self.pushButtonRegister.setGeometry(QRect(619, 320, 121, 41))
+        self.lineEditUsername = QLineEdit(self.pageLogin)
+        self.lineEditUsername.setObjectName(u"lineEditUsername")
+        self.lineEditUsername.setGeometry(QRect(530, 180, 201, 28))
+        self.lineEditPassword = QLineEdit(self.pageLogin)
+        self.lineEditPassword.setObjectName(u"lineEditPassword")
+        self.lineEditPassword.setGeometry(QRect(530, 230, 201, 28))
+        self.labelUsername = QLabel(self.pageLogin)
+        self.labelUsername.setObjectName(u"labelUsername")
+        self.labelUsername.setGeometry(QRect(420, 180, 101, 31))
+        self.labelPassword = QLabel(self.pageLogin)
+        self.labelPassword.setObjectName(u"labelPassword")
+        self.labelPassword.setGeometry(QRect(420, 230, 101, 31))
+        self.labelStatus = QLabel(self.pageLogin)
+        self.labelStatus.setObjectName(u"labelStatus")
+        self.labelStatus.setGeometry(QRect(430, 390, 341, 31))
+        self.stackedWidget.addWidget(self.pageLogin)
+        self.pageMarket = QWidget()
+        self.pageMarket.setObjectName(u"pageMarket")
+        self.tableGueter = QTableWidget(self.pageMarket)
+        if (self.tableGueter.columnCount() < 4):
+            self.tableGueter.setColumnCount(4)
+        font = QFont()
+        font.setPointSize(14)
+        __qtablewidgetitem = QTableWidgetItem()
+        __qtablewidgetitem.setFont(font);
+        self.tableGueter.setHorizontalHeaderItem(0, __qtablewidgetitem)
+        __qtablewidgetitem1 = QTableWidgetItem()
+        __qtablewidgetitem1.setFont(font);
+        self.tableGueter.setHorizontalHeaderItem(1, __qtablewidgetitem1)
+        font1 = QFont()
+        font1.setPointSize(14)
+        font1.setBold(False)
+        __qtablewidgetitem2 = QTableWidgetItem()
+        __qtablewidgetitem2.setFont(font1);
+        self.tableGueter.setHorizontalHeaderItem(2, __qtablewidgetitem2)
+        __qtablewidgetitem3 = QTableWidgetItem()
+        __qtablewidgetitem3.setFont(font);
+        self.tableGueter.setHorizontalHeaderItem(3, __qtablewidgetitem3)
+        self.tableGueter.setObjectName(u"tableGueter")
+        self.tableGueter.setGeometry(QRect(10, 60, 701, 471))
+        self.tableGueter.setColumnCount(4)
+        self.tableGueter.verticalHeader().setProperty(u"showSortIndicator", False)
+        self.tableGueter.verticalHeader().setStretchLastSection(False)
+        self.pushButtonLogout = QPushButton(self.pageMarket)
+        self.pushButtonLogout.setObjectName(u"pushButtonLogout")
+        self.pushButtonLogout.setGeometry(QRect(1050, 10, 111, 41))
+        self.pushButtonInventory = QPushButton(self.pageMarket)
+        self.pushButtonInventory.setObjectName(u"pushButtonInventory")
+        self.pushButtonInventory.setGeometry(QRect(930, 10, 111, 41))
+        self.labelCoins = QLabel(self.pageMarket)
+        self.labelCoins.setObjectName(u"labelCoins")
+        self.labelCoins.setGeometry(QRect(820, 15, 81, 31))
+        self.label_4 = QLabel(self.pageMarket)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setGeometry(QRect(760, 20, 61, 21))
+        self.label_5 = QLabel(self.pageMarket)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setGeometry(QRect(20, 20, 131, 21))
+        self.label_5.setMaximumSize(QSize(131, 21))
+        self.pushButtonBuy = QPushButton(self.pageMarket)
+        self.pushButtonBuy.setObjectName(u"pushButtonBuy")
+        self.pushButtonBuy.setGeometry(QRect(930, 470, 121, 41))
+        self.lineEditBuyUsername = QLineEdit(self.pageMarket)
+        self.lineEditBuyUsername.setObjectName(u"lineEditBuyUsername")
+        self.lineEditBuyUsername.setGeometry(QRect(900, 260, 211, 31))
+        self.lineEditBuyPassword = QLineEdit(self.pageMarket)
+        self.lineEditBuyPassword.setObjectName(u"lineEditBuyPassword")
+        self.lineEditBuyPassword.setGeometry(QRect(900, 320, 211, 31))
+        self.label = QLabel(self.pageMarket)
+        self.label.setObjectName(u"label")
+        self.label.setGeometry(QRect(800, 270, 81, 21))
+        self.label_2 = QLabel(self.pageMarket)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setGeometry(QRect(800, 330, 71, 21))
+        self.label_3 = QLabel(self.pageMarket)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setGeometry(QRect(750, 120, 411, 101))
+        self.labelBuyInfo = QLabel(self.pageMarket)
+        self.labelBuyInfo.setObjectName(u"labelBuyInfo")
+        self.labelBuyInfo.setGeometry(QRect(830, 430, 321, 21))
+        self.spinBoxBuy = QSpinBox(self.pageMarket)
+        self.spinBoxBuy.setObjectName(u"spinBoxBuy")
+        self.spinBoxBuy.setGeometry(QRect(900, 380, 42, 26))
+        self.label_11 = QLabel(self.pageMarket)
+        self.label_11.setObjectName(u"label_11")
+        self.label_11.setGeometry(QRect(800, 380, 58, 16))
+        self.stackedWidget.addWidget(self.pageMarket)
+        self.pageInventar = QWidget()
+        self.pageInventar.setObjectName(u"pageInventar")
+        self.tableWidgetInventory = QTableWidget(self.pageInventar)
+        if (self.tableWidgetInventory.columnCount() < 4):
+            self.tableWidgetInventory.setColumnCount(4)
+        __qtablewidgetitem4 = QTableWidgetItem()
+        __qtablewidgetitem4.setFont(font);
+        self.tableWidgetInventory.setHorizontalHeaderItem(0, __qtablewidgetitem4)
+        __qtablewidgetitem5 = QTableWidgetItem()
+        __qtablewidgetitem5.setFont(font);
+        self.tableWidgetInventory.setHorizontalHeaderItem(1, __qtablewidgetitem5)
+        __qtablewidgetitem6 = QTableWidgetItem()
+        __qtablewidgetitem6.setFont(font);
+        self.tableWidgetInventory.setHorizontalHeaderItem(2, __qtablewidgetitem6)
+        __qtablewidgetitem7 = QTableWidgetItem()
+        __qtablewidgetitem7.setFont(font);
+        self.tableWidgetInventory.setHorizontalHeaderItem(3, __qtablewidgetitem7)
+        self.tableWidgetInventory.setObjectName(u"tableWidgetInventory")
+        self.tableWidgetInventory.setGeometry(QRect(10, 70, 691, 461))
+        self.label_6 = QLabel(self.pageInventar)
+        self.label_6.setObjectName(u"label_6")
+        self.label_6.setGeometry(QRect(20, 10, 161, 31))
+        self.label_6.setMaximumSize(QSize(161, 31))
+        self.labelCoins_2 = QLabel(self.pageInventar)
+        self.labelCoins_2.setObjectName(u"labelCoins_2")
+        self.labelCoins_2.setGeometry(QRect(930, 20, 91, 21))
+        self.label_7 = QLabel(self.pageInventar)
+        self.label_7.setObjectName(u"label_7")
+        self.label_7.setGeometry(QRect(870, 20, 51, 21))
+        self.pushButtonSell = QPushButton(self.pageInventar)
+        self.pushButtonSell.setObjectName(u"pushButtonSell")
+        self.pushButtonSell.setGeometry(QRect(920, 470, 121, 41))
+        self.labelSellInfo = QLabel(self.pageInventar)
+        self.labelSellInfo.setObjectName(u"labelSellInfo")
+        self.labelSellInfo.setGeometry(QRect(827, 420, 311, 21))
+        self.label_8 = QLabel(self.pageInventar)
+        self.label_8.setObjectName(u"label_8")
+        self.label_8.setGeometry(QRect(740, 110, 411, 101))
+        self.label_9 = QLabel(self.pageInventar)
+        self.label_9.setObjectName(u"label_9")
+        self.label_9.setGeometry(QRect(790, 260, 81, 21))
+        self.label_10 = QLabel(self.pageInventar)
+        self.label_10.setObjectName(u"label_10")
+        self.label_10.setGeometry(QRect(790, 320, 71, 21))
+        self.lineEditSellUsername = QLineEdit(self.pageInventar)
+        self.lineEditSellUsername.setObjectName(u"lineEditSellUsername")
+        self.lineEditSellUsername.setGeometry(QRect(890, 250, 211, 31))
+        self.lineEditSellPassword = QLineEdit(self.pageInventar)
+        self.lineEditSellPassword.setObjectName(u"lineEditSellPassword")
+        self.lineEditSellPassword.setGeometry(QRect(890, 310, 211, 31))
+        self.label_12 = QLabel(self.pageInventar)
+        self.label_12.setObjectName(u"label_12")
+        self.label_12.setGeometry(QRect(790, 370, 58, 16))
+        self.spinBoxSell = QSpinBox(self.pageInventar)
+        self.spinBoxSell.setObjectName(u"spinBoxSell")
+        self.spinBoxSell.setGeometry(QRect(890, 370, 42, 26))
+        self.pushButtonZurueck = QPushButton(self.pageInventar)
+        self.pushButtonZurueck.setObjectName(u"pushButtonZurueck")
+        self.pushButtonZurueck.setGeometry(QRect(1049, 7, 101, 41))
+        self.pushButtonZurueck.setStyleSheet(u"")
+        self.stackedWidget.addWidget(self.pageInventar)
+        self.loeschen = QWidget()
+        self.loeschen.setObjectName(u"loeschen")
+        self.stackedWidget.addWidget(self.loeschen)
+        self.lschen = QWidget()
+        self.lschen.setObjectName(u"lschen")
+        self.stackedWidget.addWidget(self.lschen)
+
+        self.retranslateUi(Widget)
+
+        self.stackedWidget.setCurrentIndex(2)
+
+
+        QMetaObject.connectSlotsByName(Widget)
+    # setupUi
+
+    def retranslateUi(self, Widget):
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"Widget", None))
+        self.pushButtonLogin.setText(QCoreApplication.translate("Widget", u"Log in", None))
+        self.pushButtonRegister.setText(QCoreApplication.translate("Widget", u"Register", None))
+        self.labelUsername.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Username:</span></p></body></html>", None))
+        self.labelPassword.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Password:</span></p></body></html>", None))
+        self.labelStatus.setText("")
+        ___qtablewidgetitem = self.tableGueter.horizontalHeaderItem(0)
+        ___qtablewidgetitem.setText(QCoreApplication.translate("Widget", u"Name", None));
+        ___qtablewidgetitem1 = self.tableGueter.horizontalHeaderItem(1)
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("Widget", u"Preis", None));
+        ___qtablewidgetitem2 = self.tableGueter.horizontalHeaderItem(2)
+        ___qtablewidgetitem2.setText(QCoreApplication.translate("Widget", u"Anzahl", None));
+        ___qtablewidgetitem3 = self.tableGueter.horizontalHeaderItem(3)
+        ___qtablewidgetitem3.setText(QCoreApplication.translate("Widget", u"ID", None));
+        self.pushButtonLogout.setText(QCoreApplication.translate("Widget", u"Log out", None))
+        self.pushButtonInventory.setText(QCoreApplication.translate("Widget", u"Inventar", None))
+        self.labelCoins.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">100 zb idk</span></p></body></html>", None))
+        self.label_4.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Coins:</span></p></body></html>", None))
+        self.label_5.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:16pt; font-weight:600;\">Markt</span></p></body></html>", None))
+        self.pushButtonBuy.setText(QCoreApplication.translate("Widget", u"Kaufen", None))
+        self.label.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Username</span></p></body></html>", None))
+        self.label_2.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Password</span></p></body></html>", None))
+        self.label_3.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Bitte erstmal Authentifizierungsdaten eingeben, </span></p><p><span style=\" font-size:14pt;\">dann einen G\u00fcter ausw\u00e4hlen und dann auf </span></p><p><span style=\" font-size:14pt;\">kaufen klicken.</span></p></body></html>", None))
+        self.labelBuyInfo.setText("")
+        self.label_11.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Anzahl</span></p></body></html>", None))
+        ___qtablewidgetitem4 = self.tableWidgetInventory.horizontalHeaderItem(0)
+        ___qtablewidgetitem4.setText(QCoreApplication.translate("Widget", u"Name", None));
+        ___qtablewidgetitem5 = self.tableWidgetInventory.horizontalHeaderItem(1)
+        ___qtablewidgetitem5.setText(QCoreApplication.translate("Widget", u"Preis", None));
+        ___qtablewidgetitem6 = self.tableWidgetInventory.horizontalHeaderItem(2)
+        ___qtablewidgetitem6.setText(QCoreApplication.translate("Widget", u"Anzahl", None));
+        ___qtablewidgetitem7 = self.tableWidgetInventory.horizontalHeaderItem(3)
+        ___qtablewidgetitem7.setText(QCoreApplication.translate("Widget", u"ID", None));
+        self.label_6.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:16pt; font-weight:600;\">Inventar</span></p></body></html>", None))
+        self.labelCoins_2.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">zb 100</span></p></body></html>", None))
+        self.label_7.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Coins:</span></p></body></html>", None))
+        self.pushButtonSell.setText(QCoreApplication.translate("Widget", u"Verkaufen", None))
+        self.labelSellInfo.setText("")
+        self.label_8.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:14pt;\">Bitte erstmal Authentifizierungsdaten eingeben, </span></p><p><span style=\" font-size:14pt;\">dann einen G\u00fcter ausw\u00e4hlen und dann auf </span></p><p><span style=\" font-size:14pt;\">verkaufen klicken.</span></p></body></html>", None))
+        self.label_9.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Username</span></p></body></html>", None))
+        self.label_10.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Password</span></p></body></html>", None))
+        self.label_12.setText(QCoreApplication.translate("Widget", u"<html><head/><body><p><span style=\" font-size:12pt;\">Anzahl</span></p></body></html>", None))
+        self.pushButtonZurueck.setText(QCoreApplication.translate("Widget", u"zur\u00fcck", None))
+    # retranslateUi
+
