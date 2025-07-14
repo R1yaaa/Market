@@ -6,7 +6,13 @@ import uuid
 import unolib
 from unolib import Market, Account, User, Good
 
+import sys
+sys.path.append("../build")  # Pfad zur kompilierten unolib
+
 app = FastAPI()
+
+market = Market()
+
 
 class UserModel(BaseModel):
     username: str

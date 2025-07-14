@@ -197,6 +197,6 @@ void Market::updatePrices() {
 
 // Initialisiert den Markt mit einer festen Liste von verfügbaren Gütern
 void Market::initializeGoods() {
-    goods.push_back(std::make_shared<Good>(1, "Seltene Kristalle", 50.0, 100));
-   ......
+    goods.push_back(std::make_shared<Good>(1, "confidence boost", 50.0, 100));
+   
 }
