@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Handelsplatz API
   version: 1.0.0
-  description: REST-API für einen digitalen Handelsplatz
+  description: REST API für Benutzerregistrierung, Login, Marktangebote, Kauf und Verkauf von Gütern
 
 paths:
   /register:
@@ -13,100 +13,240 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
-              required:
-                - username
-                - password
+              $ref: "#/components/schemas/UserModel"
       responses:
         '200':
           description: Registrierung erfolgreich
+        '406':
+          description: Benutzer bereits vorhanden
+        '500':
+          description: Fehler beim Registrieren
 
   /login:
     post:
-      summary: Token-Login
+      summary: Nutzer einloggen
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
-              required:
-                - username
-                - password
+              $ref: "#/components/schemas/UserModel"
       responses:
         '200':
           description: Login erfolgreich
+        '400':
+          description: Falsches Passwort
+        '404':
+          description: Benutzer nicht gefunden
+        '500':
+          description: Fehler beim Login
 
-  /account:
+  /{username}/accountinfo:
     get:
-      summary: Kontostand & Besitz abfragen
+      summary: Kontostand und Inventar eines Nutzers abrufen
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: Rückgabe von Coins und Inventar
+          description: Kontoinformationen
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+        '404':
+          description: Nutzer nicht gefunden
+        '500':
+          description: Fehler beim Abrufen
 
   /prices:
     get:
-      summary: Aktuelle Handelswerte abrufen
+      summary: Preise aktualisieren und abrufen
       responses:
         '200':
-          description: Liste aktueller Marktpreise
-
-  /buy:
-    post:
-      summary: Kauf von Handelsgut
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                item:
-                  type: string
-                quantity:
-                  type: integer
-              required:
-                - item
-                - quantity
-      responses:
-        '200':
-          description: Kauf erfolgreich
-
-  /sell:
-    post:
-      summary: Verkauf von Handelsgut
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                item:
-                  type: string
-                quantity:
-                  type: integer
-              required:
-                - item
-                - quantity
-      responses:
-        '200':
-          description: Verkauf erfolgreich
+          description: Erfolgreich
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prices:
+                    type: object
+                    additionalProperties:
+                      type: number
+        '500':
+          description: Fehler beim Abrufen der Preise
 
   /offers:
     get:
-      summary: Alle Angebote am Markt
+      summary: Alle Marktangebote abrufen
       responses:
         '200':
-          description: Liste aller Markteinträge
+          description: Liste aller Angebote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OfferResponse"
+        '500':
+          description: Fehler beim Laden der Angebote
 
+  /{password}/buy:
+    post:
+      summary: Gut kaufen
+      parameters:
+        - in: path
+          name: password
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/GoodModel"
+                - type: object
+                  properties:
+                    username:
+                      type: string
+                    password:
+                      type: string
+      responses:
+        '200':
+          description: Kauf erfolgreich
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+        '400':
+          description: Fehler beim Kauf (z.B. kein Geld)
+        '406':
+          description: Authentifizierung fehlgeschlagen
+        '500':
+          description: Serverfehler
+
+  /{password}/sell:
+    post:
+      summary: Gut verkaufen
+      parameters:
+        - in: path
+          name: password
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/GoodModel"
+                - type: object
+                  properties:
+                    username:
+                      type: string
+                    password:
+                      type: string
+      responses:
+        '200':
+          description: Verkauf erfolgreich
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+        '400':
+          description: Fehler beim Verkauf
+        '406':
+          description: Authentifizierung fehlgeschlagen
+        '500':
+          description: Serverfehler
+
+  /logout:
+    post:
+      summary: Nutzer ausloggen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserModel"
+      responses:
+        '200':
+          description: Logout erfolgreich
+        '400':
+          description: Logout fehlgeschlagen
+        '500':
+          description: Fehler beim Logout
+
+components:
+  schemas:
+    UserModel:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    GoodModel:
+      type: object
+      properties:
+        goodname:
+          type: string
+        goodid:
+          type: integer
+        quantity:
+          type: integer
+      required:
+        - goodname
+        - goodid
+        - quantity
+
+    AccountResponse:
+      type: object
+      properties:
+        balance:
+          type: number
+        ID:
+          type: array
+          items:
+            type: integer
+        Name:
+          type: array
+          items:
+            type: string
+        Price:
+          type: array
+          items:
+            type: number
+        Quantity:
+          type: array
+          items:
+            type: integer
+
+    OfferResponse:
+      type: object
+      properties:
+        ID:
+          type: array
+          items:
+            type: integer
+        Name:
+          type: array
+          items:
+            type: string
+        Price:
+          type: array
+          items:
+            type: number
+        Quantity:
+          type: array
+          items:
+            type: integer
