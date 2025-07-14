@@ -7,14 +7,11 @@ from ui_form import Ui_Widget
 from PySide6.QtCore import QTimer
 import sys
 
+
+#pyside6-uic form.ui -o ui_form.py um py datei zu erstellen
+#uvicorn fastapi_server:app --reload um server zu starten
+
 BASE = "http://localhost:8000"
-
-#pyside6-uic form.ui -o ui_form.py um py Datei zu erstellen
-
-#sudo apt update
-#sudo apt install libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1
-
-
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -22,59 +19,47 @@ class MainWindow(QWidget):
         self.ui = Ui_Widget()
         self.ui.setupUi(self)
 
-
         # Nach dem Start Login-Seite anzeigen
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageLogin)
 
-        #TStyling
+        # Styling
         self.setup_gui_styling()
 
         # Login verbinden
         self.ui.pushButtonLogin.clicked.connect(self.login)
 
-        #Register verbinden
+        # Register verbinden
         self.ui.pushButtonRegister.clicked.connect(self.register)
 
         # Logout verbinden
         self.ui.pushButtonLogout.clicked.connect(self.logout)
 
-        #Inventar verbinden
+        # Inventar verbinden
         self.ui.pushButtonInventory.clicked.connect(self.inventory)
 
-        #Zurück Button
+        # Zurück Button
         self.ui.pushButtonZurueck.clicked.connect(self.back)
 
-        #Kauf Button
+        # Kauf Button
         self.ui.pushButtonBuy.clicked.connect(self.buy)
 
-        #Verkaufen Button
+        # Verkaufen Button
         self.ui.pushButtonSell.clicked.connect(self.sell)
 
-
-
-
-        #Startwerte
+        # Startwerte
         self.username = ""
         self.password = ""
 
-
-
-
-
-        #Timer für Preisupdates
+        # Timer für Preisupdates
         self.timer = QTimer()
         self.timer.timeout.connect(self.prices)
-        self.timer.start(2000) # alle 2 Sekunden
-
-
-    
-
+        self.timer.start(2000)  # alle 2 Sekunden
 
     def login(self):
         self.username = self.ui.lineEditUsername.text()
         self.password = self.ui.lineEditPassword.text()
 
-        response = requests.post(f"{BASE}/login", json={"username" : self.username, "password" : self.password})
+        response = requests.post(f"{BASE}/login", json={"username": self.username, "password": self.password})
     
         if response.status_code != 200:
             self.ui.labelStatus.setText(response.json().get("detail"))
@@ -91,12 +76,11 @@ class MainWindow(QWidget):
 
 
 
-
     def register(self):
         self.username = self.ui.lineEditUsername.text()
         self.password = self.ui.lineEditPassword.text()
 
-        response = requests.post(f"{BASE}/register", json={"username" : self.username, "password" : self.password})
+        response = requests.post(f"{BASE}/register", json={"username": self.username, "password": self.password})
     
         if response.status_code != 200:
             self.ui.labelStatus.setText(response.json().get("detail"))
@@ -113,25 +97,29 @@ class MainWindow(QWidget):
 
 
     def load_account(self):
-            response = requests.get(f"{BASE}//{self.username}/accountinfo", json={self.username})
+        response = requests.get(f"{BASE}/{self.username}/accountinfo")
 
-            if response.status_code == 200:
-                balance = response.json()["balance"]        
-                self.ui.labelCoins.setText(str(balance))            #aktueller Kontostand
-                self.ui.labelCoins_2.setText(str(balance))
-            else:
-                self.ui.labelStatus.setText("Fehler beim Laden des Accounts.")
+        if response.status_code == 200:
+            balance = response.json()["balance"]        
+            self.ui.labelCoins.setText(str(balance))
+            self.ui.labelCoins_2.setText(str(balance))
+        else:
+            self.ui.labelStatus.setText("Fehler beim Laden des Accounts.")
+
 
 
 
 
     def logout(self):
+        response = requests.post(f"{BASE}/logout", json={"username": self.username, "password": self.password})
+        
         self.clear_all_inputs()
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageLogin)
 
 
 
-    #Hilfsfunktion
+
+    # Hilfsfunktion
     def clear_all_inputs(self):
         for widget in self.findChildren(QtWidgets.QLineEdit):
             widget.clear()
@@ -144,27 +132,34 @@ class MainWindow(QWidget):
         self.ui.labelBuyInfo.clear()
 
 
+
+
+
     def inventory(self):
         self.load_inventory()
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageInventar)
 
 
-    def load_inventory(self):
 
+
+
+    def load_inventory(self):
         try:
             response = requests.get(f"{BASE}/{self.username}/accountinfo")
 
             if response.status_code == 200:
                 self.ui.tableWidgetInventory.setRowCount(0)
-                inv = response.json()
+                inv = response.json()   #inventar
 
-                for i, (name, preis, menge, gid) in enumerate(zip(
-                    inv["Name"], inv["Price"], inv["Quantity"], inv["ID"]
-                )):
-                    self.ui.tableWidgetInventory.setItem(i, 0, QTableWidgetItem(str(name)))
-                    self.ui.tableWidgetInventory.setItem(i, 1, QTableWidgetItem(str(preis)))
-                    self.ui.tableWidgetInventory.setItem(i, 2, QTableWidgetItem(str(menge)))
-                    self.ui.tableWidgetInventory.setItem(i, 3, QTableWidgetItem(str(gid)))
+                if inv["Name"] and inv["Price"] and inv["Quantity"] and inv["ID"]:
+                    for i, (name, preis, menge, gid) in enumerate(zip(
+                        inv["Name"], inv["Price"], inv["Quantity"], inv["ID"]
+                    )):
+                        self.ui.tableWidgetInventory.insertRow(i)
+                        self.ui.tableWidgetInventory.setItem(i, 0, QTableWidgetItem(str(name)))
+                        self.ui.tableWidgetInventory.setItem(i, 1, QTableWidgetItem(str(preis)))
+                        self.ui.tableWidgetInventory.setItem(i, 2, QTableWidgetItem(str(menge)))
+                        self.ui.tableWidgetInventory.setItem(i, 3, QTableWidgetItem(str(gid)))
                     
             else:
                 self.ui.labelSellInfo.setText("Fehler beim Laden des Inventars")
@@ -174,6 +169,7 @@ class MainWindow(QWidget):
 
 
 
+    #zurück Button
     def back(self):
         self.load_market()
         self.ui.stackedWidget.setCurrentWidget(self.ui.pageMarket)
@@ -181,33 +177,38 @@ class MainWindow(QWidget):
 
 
 
-    def accountinfo(self):                              
 
-        response = requests.post(f"{BASE}/{self.username}/accountinfo", json={self.username})
+    def accountinfo(self):                              
+        response = requests.get(f"{BASE}/{self.username}/accountinfo")
 
         if response.status_code != 200:
             print(response.json().get("detail"))
             return None
-
         else:
             data = response.json()
-            balance = data["balance"]
-            inventory = {
+            balance = data["balance"]   #Kontostand
+            inventory = {               #Inventar Objekte
                 "ID": data["ID"],
-                "Name" : data["Name"],
-                "Price" : data["Price"],
-                "Quantity" : data["Quantity"]
+                "Name": data["Name"],
+                "Price": data["Price"],
+                "Quantity": data["Quantity"]
             }
             return balance, inventory
+
+
 
 
     def prices(self):
         try:
             response = requests.get(f"{BASE}/prices")
             self.load_market()
+            self.load_inventory()
         except Exception:
             pass
         
+
+
+
 
     def load_market(self):
         self.ui.tableGueter.clearContents()
@@ -218,22 +219,25 @@ class MainWindow(QWidget):
                 self.ui.tableGueter.setRowCount(0)
                 goods = response.json()
 
-                for i, (name, preis, menge, gid) in enumerate(zip(
-                    goods["Name"], goods["Price"], goods["Quantity"], goods["ID"])):
-                 
-                    self.ui.tableGueter.insertRow(i)
-                    self.ui.tableGueter.setItem(i, 0, QTableWidgetItem(name))
-                    self.ui.tableGueter.setItem(i, 1, QTableWidgetItem(str(preis)))
-                    self.ui.tableGueter.setItem(i, 2, QTableWidgetItem(str(menge)))
-                    self.ui.tableGueter.setItem(i, 3, QTableWidgetItem(str(gid)))
+                # Prüfe ob Listen nicht leer sind
+                if goods["Name"] and goods["Price"] and goods["Quantity"] and goods["ID"]:
+                    for i, (name, preis, menge, gid) in enumerate(zip(
+                        goods["Name"], goods["Price"], goods["Quantity"], goods["ID"])):
+                     
+                        self.ui.tableGueter.insertRow(i)
+                        self.ui.tableGueter.setItem(i, 0, QTableWidgetItem(name))
+                        self.ui.tableGueter.setItem(i, 1, QTableWidgetItem(str(preis)))
+                        self.ui.tableGueter.setItem(i, 2, QTableWidgetItem(str(menge)))
+                        self.ui.tableGueter.setItem(i, 3, QTableWidgetItem(str(gid)))
         except Exception as e:
             self.ui.labelBuyInfo.setText(f"Fehler beim Laden des Markts: {e}")
 
 
-        
+
+
 
     def buy(self):
-        zeile = self.ui.tableGueter.currentRow()
+        zeile = self.ui.tableGueter.currentRow()    #Zeile die man anklickt
         if zeile == -1:
             self.ui.labelBuyInfo.setText("Bitte Gut auswählen")
             return
@@ -245,18 +249,21 @@ class MainWindow(QWidget):
         good_name = self.ui.tableGueter.item(zeile, 0).text()
 
         payload = {
-            "data": {
-                "goodname": good_name,
-                "goodid" : good_id,
-                "quantity" : menge
-            },
-            "userdata": {
-                "username" : self.username,
-                "password" : password
-            }
+            "data" : {
+            "goodname": good_name,
+            "goodid": good_id,
+            "quantity": menge
+        },
+        
+        "userdata" : {
+            "username": self.username,
+            "password": password
+        }
         }
 
-        response = requests.post(f"{BASE}/{password}/buy", json=payload)
+        
+        response = requests.post(f"{BASE}/{password}/buy",json=payload)
+                               
 
         if response.status_code == 200:
             self.ui.labelBuyInfo.setText("Kauf erfolgreich!")
@@ -265,9 +272,9 @@ class MainWindow(QWidget):
             self.load_market()
 
             self.ui.lineEditBuyPassword.clear()
-            self.ui.lineEditBuyUsername.clear()
+            self.ui.spinBoxBuy.setValue(0)
         else:
-            self.ui.labelBuyInfo.setText(response.json().get("detail", "Kauf fehlgeschlagen"))
+            self.ui.labelBuyInfo.setText(str(response.json().get("detail")))
         
 
 
@@ -280,25 +287,27 @@ class MainWindow(QWidget):
         password = self.ui.lineEditSellPassword.text()
         menge = self.ui.spinBoxSell.value()
 
-        good_name = self.ui.tableWidgetInventory.item(zeile, 3).text()
+        good_name = self.ui.tableWidgetInventory.item(zeile, 0).text()
         good_id = int(self.ui.tableWidgetInventory.item(zeile, 3).text())
 
+        # FIX: Korrigiere JSON-Struktur - flache Struktur statt verschachtelt
         payload = {
-            "data": {
-                "goodname": good_name,
-                "goodid" : good_id,
-                "quantity" : menge
-            },
-            "userdata": {
-                "username" : self.username,
-                "password" : password
-            }
+            "data" : {
+            "goodname": good_name,
+            "goodid": good_id,
+            "quantity": menge
+        },
+        
+            "userdata" : {
+            "username": self.username,
+            "password": password
+        }
         }
 
         response = requests.post(f"{BASE}/{password}/sell", json=payload)
 
         if response.status_code != 200:
-            self.ui.labelSellInfo.setText(response.json().get("detail", "Verkauf fehlgeschlagen."))
+            self.ui.labelSellInfo.setText(response.json().get("detail"))
         else:
             self.ui.labelSellInfo.setText("Verkauf erfolgreich!")
             self.load_account()
@@ -306,12 +315,13 @@ class MainWindow(QWidget):
             self.load_market()
 
             self.ui.lineEditSellPassword.clear()
-            self.ui.lineEditSellUsername.clear()
-        
+            self.ui.spinBoxSell.setValue(0)
 
 
 
-#--------------------------------Styling und so-----------------------------------
+
+
+    #--------------------------------Styling und so-----------------------------------
     def setup_gui_styling(self):
         # Farbpalette
         cream = "#FAF7F3"
@@ -355,14 +365,12 @@ class MainWindow(QWidget):
             label.setFont(font)
             label.setStyleSheet(f"color: {dark_brown};")
 
-        #elemten braun färben
+        # Elementen braun färben
         for element in [self.ui.labelUsername, self.ui.labelPassword, self.ui.label, self.ui.label_10, self.ui.label_11, self.ui.label_12,
                      self.ui.label_2, self.ui.label_3, self.ui.label_4, self.ui.label_5, self.ui.label_6, self.ui.label_7, self.ui.label_8,self.ui.label_9,
                      self.ui.lineEditBuyPassword, self.ui.lineEditBuyUsername, self.ui.lineEditPassword, self.ui.lineEditSellPassword, self.ui.lineEditSellUsername,
                      self.ui.lineEditUsername, self.ui.spinBoxBuy, self.ui.spinBoxSell]:
             element.setStyleSheet(f"color: {dark_brown};")
-
-
 
         # Buttons: Peach-Farbe
         for button in self.findChildren(QPushButton):
@@ -382,10 +390,12 @@ class MainWindow(QWidget):
         # Gesamter Hintergrund der App
         self.setStyleSheet(f"background-color: {cream};")
 
+
+
 #---------------------------------------------------------------
 
-
 """
+
 #mocking
 from unittest.mock import patch
 

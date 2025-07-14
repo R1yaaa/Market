@@ -64,11 +64,10 @@ async def login(userdata: UserModel):
             print(f"DEBUG: User {userdata.username} not found")
             raise HTTPException(status_code=404, detail="User not found")
         
-        if not user.authenticate(userdata.username, userdata.password): #in hpp ohne username parameter
+        # FIX: Verwendet market.loginUser statt user.authenticate
+        if not market.loginUser(userdata.username, userdata.password):
             print(f"DEBUG: {userdata.password} is not the right password")
             raise HTTPException(status_code=400, detail="incorrect password")
-        
-        market.loginUser(userdata.username, userdata.password)
 
         print(f"DEBUG: User {userdata.username} logged in successfully")
 
@@ -87,19 +86,37 @@ async def accountinfo(username: str):
     @throws HTTPException 500 if showing account fails
     """
     try:
-        if market.getUser(username) == None:
+        user = market.getUser(username)
+        if user == None:
             print(f"DEBUG: {username} not found")
             raise HTTPException(status_code=404, detail="User not found")
         
-        balance = account.getBalance(username)  #kein parameter in hpp
-        inventory = user.getInventory(username) #kein parameter in hpp
+        # FIX: Verwendet user-Objekt statt undefinierte Variablen
+        balance = user.getAccount().getBalance()
+        inventory = user.getInventory()
+        
+        # FIX: Erstelle Listen für alle Inventar-Items
+        inventory_data = {
+            "ID": [],
+            "Name": [],
+            "Price": [],
+            "Quantity": []
+        }
+        
+        for good_id, quantity in inventory.items():
+            good = market.getGood(good_id)
+            if good:
+                inventory_data["ID"].append(good.getId())
+                inventory_data["Name"].append(good.getName())
+                inventory_data["Price"].append(good.getCurrentPrice())
+                inventory_data["Quantity"].append(quantity)
 
         return {
             "balance": balance,
-            "ID": inventory.getId,
-            "Name": inventory.getName,
-            "Price": inventory.getPrice,
-            "Quantity": inventory.getQuantity
+            "ID": inventory_data["ID"],
+            "Name": inventory_data["Name"],
+            "Price": inventory_data["Price"],
+            "Quantity": inventory_data["Quantity"]
         }
     except Exception as e:
         print(f"ERROR showing account: {e}")
@@ -114,9 +131,15 @@ async def prices():
     @throws HTTPException 500 if prices updating fails
     """
     try:
-        prices = market.updatePrices()
+        market.updatePrices()
+        
+        # FIX: Gebe aktuelle Preise zurück
+        goods = market.getGoods()
+        prices_data = {}
+        for good in goods:
+            prices_data[good.getId()] = good.getCurrentPrice()
 
-        return {"prices": prices}
+        return {"prices": prices_data}
     except Exception as e:
         print(f"ERROR updating prices: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to update prices: {str(e)}")
@@ -130,21 +153,30 @@ async def offers():
     @throws HTTPException 500 if showing goods fails
     """
     try:
-        obj_goods = market.getGoods()
-
-        return {
-            "ID": obj_goods.getId,
-            "Name": obj_goods.getName,
-            "Price": obj_goods.getPrice,
-            "Quantity": obj_goods.getQuantity
+        goods = market.getGoods()
+        
+        # FIX: Erstelle Listen für alle Güter-Daten
+        goods_data = {
+            "ID": [],
+            "Name": [],
+            "Price": [],
+            "Quantity": []
         }
+        
+        for good in goods:
+            goods_data["ID"].append(good.getId())
+            goods_data["Name"].append(good.getName())
+            goods_data["Price"].append(good.getCurrentPrice())
+            goods_data["Quantity"].append(good.getQuantity())
+
+        return goods_data
     except Exception as e:
         print(f"ERROR showing offers: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to show offers: {str(e)}")
 
 
 @app.post("/{password}/buy")
-async def buy(data: GoodModel, userdata: UserModel):
+async def buy(password: str, data: GoodModel, userdata: UserModel):
     """
     @brief Buying goods
     @param Gooddata containing name and quantity
@@ -160,32 +192,54 @@ async def buy(data: GoodModel, userdata: UserModel):
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
-        restquantity = good.getQuantity(data.goodid) #in hpp ohne parameter
-        if data.quantity > restquantity:
+        good = market.getGood(data.goodid)
+        if data.quantity > good.getQuantity():
             print("DEBUG: Not enough goods left")
             raise HTTPException(status_code=400, detail="Not enough goods in the market left")
 
-        if not user.authenticate(userdata.username, userdata.password):    #in hpp ohne username parameter
+        # FIX: Verwende market.loginUser für Authentifizierung
+        if not market.loginUser(userdata.username, userdata.password):
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
-        price = good.getCurrentPrice(data.goodid)    #in hpp ohne parameter
-        amount = price*data.quantity
-        if not account.hasEnoughBalance(userdata.username, amount):  #in hpp ohne username parameter
+        user = market.getUser(userdata.username)
+        price = good.getCurrentPrice()
+        amount = price * data.quantity
+        
+        if not user.getAccount().hasEnoughBalance(amount):
             print("DEBUG: Not enough money")
             raise HTTPException(status_code=400, detail="Not enough money")
         
-        market.buyGood(userdata.username, data.goodid, data.quantity) #in hpp ohne username parameter
+        # FIX: Verwende market.buyGood statt separate Funktionen
+        if not market.buyGood(data.goodid, data.quantity):
+            print("DEBUG: Buy transaction failed")
+            raise HTTPException(status_code=500, detail="Buy transaction failed")
 
-        balance = account.getBalance(userdata.username)  #in hpp ohne parameter
-        inventory = user.getInventory(userdata.username) #in hpp ohne parameter
+        # FIX: Aktualisiere Antwort-Format wie in accountinfo
+        balance = user.getAccount().getBalance()
+        inventory = user.getInventory()
+        
+        inventory_data = {
+            "ID": [],
+            "Name": [],
+            "Price": [],
+            "Quantity": []
+        }
+        
+        for good_id, quantity in inventory.items():
+            good_obj = market.getGood(good_id)
+            if good_obj:
+                inventory_data["ID"].append(good_obj.getId())
+                inventory_data["Name"].append(good_obj.getName())
+                inventory_data["Price"].append(good_obj.getCurrentPrice())
+                inventory_data["Quantity"].append(quantity)
 
         return {
             "balance": balance,
-            "ID": inventory.getId,
-            "Name": inventory.getName,
-            "Price": inventory.getPrice,
-            "Quantity": inventory.getQuantity
+            "ID": inventory_data["ID"],
+            "Name": inventory_data["Name"],
+            "Price": inventory_data["Price"],
+            "Quantity": inventory_data["Quantity"]
         }
     except Exception as e:
         print(f"ERROR buying good: {e}")
@@ -193,7 +247,7 @@ async def buy(data: GoodModel, userdata: UserModel):
 
 
 @app.post("/{password}/sell")
-async def sell(data: GoodModel, userdata: UserModel):
+async def sell(password: str, data: GoodModel, userdata: UserModel):
     """
     @brief Selling goods
     @param Gooddata containing name and quantity
@@ -209,27 +263,49 @@ async def sell(data: GoodModel, userdata: UserModel):
             print("DEBUG: Good does not exist")
             raise HTTPException(status_code=404, detail="Good is not represented in the market")
 
-        if not user.authenticate(userdata.username, userdata.password):   #in hpp ohne username parameter
+        # FIX: Verwende market.loginUser für Authentifizierung
+        if not market.loginUser(userdata.username, userdata.password):
             print("DEBUG: Wrong password")
             raise HTTPException(status_code=406, detail="Incorrect password")
 
-        anzahl = user.getGoodQuantity(userdata.username, data.goodid) #in hpp ohne username parameter
-        if data.quantity > anzahl:
+        user = market.getUser(userdata.username)
+        user_quantity = user.getGoodQuantity(data.goodid)
+        
+        if data.quantity > user_quantity:
             print("DEBUG: Not enough in inventory")
             raise HTTPException(status_code=400, detail="Not enough goods in the inventory")
 
-        market.sellGood(userdata.username, data.goodid, data.quantity)    #in hpp ohne username parameter
+        # FIX: Verwende market.sellGood statt separate Funktionen
+        if not market.sellGood(data.goodid, data.quantity):
+            print("DEBUG: Sell transaction failed")
+            raise HTTPException(status_code=500, detail="Sell transaction failed")
 
-        balance = account.getBalance(userdata.username)  #in hpp ohne parameter
-        inventory = user.getInventory(userdata.username) #in hpp ohne parameter
+        # FIX: Gleiches Antwort-Format wie bei buy
+        balance = user.getAccount().getBalance()
+        inventory = user.getInventory()
+        
+        inventory_data = {
+            "ID": [],
+            "Name": [],
+            "Price": [],
+            "Quantity": []
+        }
+        
+        for good_id, quantity in inventory.items():
+            good_obj = market.getGood(good_id)
+            if good_obj:
+                inventory_data["ID"].append(good_obj.getId())
+                inventory_data["Name"].append(good_obj.getName())
+                inventory_data["Price"].append(good_obj.getCurrentPrice())
+                inventory_data["Quantity"].append(quantity)
 
         return {
             "balance": balance,
-            "ID": inventory.getId,
-            "Name": inventory.getName,
-            "Price": inventory.getPrice,
-            "Quantity": inventory.getQuantity
-            }
+            "ID": inventory_data["ID"],
+            "Name": inventory_data["Name"],
+            "Price": inventory_data["Price"],
+            "Quantity": inventory_data["Quantity"]
+        }
     except Exception as e:
         print(f"ERROR selling good: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to sell good: {str(e)}")
@@ -245,7 +321,10 @@ async def logout(userdata: UserModel):
     try:       
         print(f"DEBUG: {userdata.username} trying to logout")
 
-        market.logout(userdata.username) #in hpp ohne parameter
+        # FIX: Verwende market.logout mit Passwort-Parameter
+        if not market.logout(userdata.username, userdata.password):
+            print("DEBUG: Logout failed")
+            raise HTTPException(status_code=400, detail="Logout failed")
 
         return {"message":f"{userdata.username} logged out"}
     except Exception as e:
