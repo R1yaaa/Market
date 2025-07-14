@@ -26,9 +26,9 @@ public:
      */
     double generateNextPrice(
         double current_price, 
-        double tendency = 0.03, 
-        double volatility = 0.8, 
-        double dt = 0.002
+        double tendency = 0.05, 
+        double volatility = 0.4, 
+        double dt = 0.01
     );
 
 private:
