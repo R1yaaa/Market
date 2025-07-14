@@ -215,7 +215,7 @@ goods.push_back(std::make_shared<Good>(10, "fire resistance (uncommon)", 90.0, 1
 goods.push_back(std::make_shared<Good>(11, "fireball flask (rare)", 250.0, 50));
 goods.push_back(std::make_shared<Good>(12, "invisibility potion –120s (rare)", 300.0, 50));
 goods.push_back(std::make_shared<Good>(13, "venom(rare)", 275.0, 50));
-goods.push_back(std::make_shared<Good>(14, "smoke orb – escape battle (rare)", 220.0, 50));
+goods.push_back(std::make_shared<Good>(14, "smoke orb (rare)", 220.0, 50));
 
 // EPIC ITEMS
 goods.push_back(std::make_shared<Good>(15, "teleport(epic)", 800.0, 10));
