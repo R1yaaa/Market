@@ -1,5 +1,11 @@
 #include "../include/good.hpp"
 #include <algorithm>
+#include <cmath>
+
+// Hilfsfunktion für Rundung auf 2 Nachkommastellen
+double roundToTwoDecimals(double value) {
+    return std::round(value * 100.0) / 100.0;
+}
 
 Good::Good(int id, const std::string& name, double initial_price, int initial_quantity) 
     : id(id), name(name), current_price(initial_price), quantity(initial_quantity) {
@@ -12,6 +18,9 @@ Good::Good(int id, const std::string& name, double initial_price, int initial_qu
     if (quantity < 0) {
         quantity = 0;
     }
+    
+    // Round price to 2 decimal places
+    current_price = roundToTwoDecimals(current_price);
 }
 
 int Good::getId() const {
@@ -23,7 +32,8 @@ std::string Good::getName() const {
 }
 
 double Good::getCurrentPrice() const {
-    return current_price;
+    // Immer auf 2 Nachkommastellen runden beim Zurückgeben
+    return roundToTwoDecimals(current_price);
 }
 
 int Good::getQuantity() const {
@@ -32,7 +42,8 @@ int Good::getQuantity() const {
 
 void Good::updatePrice(double new_price) {
     if (new_price > 0) {
-        current_price = new_price;
+        // Round to 2 decimal places before storing
+        current_price = roundToTwoDecimals(new_price);
     }
     // Ignore non-positive prices
 }

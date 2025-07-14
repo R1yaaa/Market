@@ -197,6 +197,35 @@ void Market::updatePrices() {
 
 // Initialisiert den Markt mit einer festen Liste von verfügbaren Gütern
 void Market::initializeGoods() {
-    goods.push_back(std::make_shared<Good>(1, "confidence boost", 50.0, 100));
-   
+    // COMMON ITEMS
+goods.push_back(std::make_shared<Good>(1, "small health potion (common)", 40.0, 100));
+goods.push_back(std::make_shared<Good>(2, "antidote (common)", 30.0, 100)); 
+goods.push_back(std::make_shared<Good>(3, "mana potion (common)", 45.0, 100));
+goods.push_back(std::make_shared<Good>(4, "stamina brew (common)", 35.0, 100));
+goods.push_back(std::make_shared<Good>(5, "glowdust light orb (common)", 25.0, 100));
+
+// UNCOMMON ITEMS
+goods.push_back(std::make_shared<Good>(6, "confidence potion (uncommon)", 65.0, 100));
+goods.push_back(std::make_shared<Good>(7, "swiftness elixir (uncommon)", 70.0, 100));
+goods.push_back(std::make_shared<Good>(8, "no fall damage for 24h (uncommon)", 100.0, 100));
+goods.push_back(std::make_shared<Good>(9, "stone skin oil – +armor for 10m (uncommon)", 85.0, 100));
+goods.push_back(std::make_shared<Good>(10, "night vision eye drop (uncommon)", 60.0, 100));
+goods.push_back(std::make_shared<Good>(11, "flame ward tonic – fire resist (uncommon)", 90.0, 100));
+
+// RARE ITEMS
+goods.push_back(std::make_shared<Good>(12, "fireball flask – throw to deal damage (rare)", 250.0, 50));
+goods.push_back(std::make_shared<Good>(13, "cloak of invisibility potion – 60s (rare)", 300.0, 50));
+goods.push_back(std::make_shared<Good>(14, "venom vial – coat blade with poison (rare)", 275.0, 50));
+goods.push_back(std::make_shared<Good>(15, "smoke orb – escape battle (rare)", 220.0, 50));
+
+// EPIC ITEMS
+goods.push_back(std::make_shared<Good>(16, "phoenix tear – revive ally (epic)", 800.0, 10));
+goods.push_back(std::make_shared<Good>(17, "astral anchor – auto-revive on death (epic)", 750.0, 10));
+goods.push_back(std::make_shared<Good>(18, "time drift vial – undo 1 action (epic)", 850.0, 10));
+
+// LEGENDARY ITEMS
+goods.push_back(std::make_shared<Good>(19, "elixir of time – reverse 5 minutes (legendary)", 1500.0, 1));
+goods.push_back(std::make_shared<Good>(20, "soul shard – resurrect party (legendary)", 2000.0, 1));
+goods.push_back(std::make_shared<Good>(21, "mirror of echoes – summon clone (legendary)", 1800.0, 1));
+
 }

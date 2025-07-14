@@ -101,8 +101,8 @@ class MainWindow(QWidget):
 
         if response.status_code == 200:
             balance = response.json()["balance"]        
-            self.ui.labelCoins.setText(str(balance))
-            self.ui.labelCoins_2.setText(str(balance))
+            self.ui.labelCoins.setText(f"{balance:.2f}")
+            self.ui.labelCoins_2.setText(f"{balance:.2f}")
         else:
             self.ui.labelStatus.setText("Fehler beim Laden des Accounts.")
 
@@ -157,7 +157,7 @@ class MainWindow(QWidget):
                     )):
                         self.ui.tableWidgetInventory.insertRow(i)
                         self.ui.tableWidgetInventory.setItem(i, 0, QTableWidgetItem(str(name)))
-                        self.ui.tableWidgetInventory.setItem(i, 1, QTableWidgetItem(str(preis)))
+                        self.ui.tableWidgetInventory.setItem(i, 1, QTableWidgetItem(f"{preis:.2f}"))
                         self.ui.tableWidgetInventory.setItem(i, 2, QTableWidgetItem(str(menge)))
                         self.ui.tableWidgetInventory.setItem(i, 3, QTableWidgetItem(str(gid)))
                     
@@ -226,7 +226,7 @@ class MainWindow(QWidget):
                      
                         self.ui.tableGueter.insertRow(i)
                         self.ui.tableGueter.setItem(i, 0, QTableWidgetItem(name))
-                        self.ui.tableGueter.setItem(i, 1, QTableWidgetItem(str(preis)))
+                        self.ui.tableGueter.setItem(i, 1, QTableWidgetItem(f"{preis:.2f}"))
                         self.ui.tableGueter.setItem(i, 2, QTableWidgetItem(str(menge)))
                         self.ui.tableGueter.setItem(i, 3, QTableWidgetItem(str(gid)))
         except Exception as e:

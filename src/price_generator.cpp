@@ -30,5 +30,6 @@ double PriceGenerator::generateNextPrice(
         new_price = 0.01;
     }
     
-    return new_price;
+    // Round to 2 decimal places
+    return std::round(new_price * 100.0) / 100.0;
 }
