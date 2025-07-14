@@ -159,7 +159,7 @@ class MainWindow(QWidget):
                 inv = response.json()
 
                 for i, (name, preis, menge, gid) in enumerate(zip(
-                    inv["Name"], inv["Price"], inv["QUantity"], inv["ID"]
+                    inv["Name"], inv["Price"], inv["Quantity"], inv["ID"]
                 )):
                     self.ui.tableWidgetInventory.setItem(i, 0, QTableWidgetItem(str(name)))
                     self.ui.tableWidgetInventory.setItem(i, 1, QTableWidgetItem(str(preis)))
@@ -385,15 +385,15 @@ class MainWindow(QWidget):
 #---------------------------------------------------------------
 
 
-
+"""
 #mocking
 from unittest.mock import patch
 
 mocked_goods = {
-    "ID": [1, 2, 3],
-    "Name": ["Kaktus", "Banane", "test"],
-    "Price": [12.5, 7.2, 5.0],
-    "Quantity": [10, 20, 5]
+    "ID": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    "Name": ["Kaktus", "Banane", "test", "awdw", "bwf", "cef", "def", "efe", "faf", "gwf", "eins", "zwei", "drei", "vier", "letztes"],
+    "Price": [12.5, 7.2, 5.0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 19],
+    "Quantity": [10, 20, 5, 21, 32, 53, 65, 11, 77, 88, 1, 2, 3, 4, 5]
 }
 
 class MockResponse:
@@ -427,13 +427,13 @@ if __name__ == "__main__":
         window = MainWindow()
         window.show()
         sys.exit(app.exec())
+"""
 
-
-#if __name__ == "__main__":
-  #  app = QApplication(sys.argv)
-   # window = MainWindow()
-   # window.show()
-   # sys.exit(app.exec())
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
 
 
 
