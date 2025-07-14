@@ -45,3 +45,4 @@ target_link_libraries(run_tests
 # Test-Target hinzufügen
 enable_testing()
 add_test(NAME unit_tests COMMAND run_tests)
+
