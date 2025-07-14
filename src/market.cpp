@@ -198,15 +198,5 @@ void Market::updatePrices() {
 // Initialisiert den Markt mit einer festen Liste von verfügbaren Gütern
 void Market::initializeGoods() {
     goods.push_back(std::make_shared<Good>(1, "Seltene Kristalle", 50.0, 100));
-    goods.push_back(std::make_shared<Good>(2, "Goldbarren", 75.0, 80));
-    goods.push_back(std::make_shared<Good>(3, "Diamanten", 120.0, 50));
-    goods.push_back(std::make_shared<Good>(4, "Platin", 90.0, 60));
-    goods.push_back(std::make_shared<Good>(5, "Seltene Erden", 45.0, 120));
-    goods.push_back(std::make_shared<Good>(6, "Antimaterie", 200.0, 25));
-    goods.push_back(std::make_shared<Good>(7, "Quantenkristalle", 150.0, 40));
-    goods.push_back(std::make_shared<Good>(8, "Unobtainium", 300.0, 15));
-    goods.push_back(std::make_shared<Good>(9, "Mythril", 85.0, 70));
-    goods.push_back(std::make_shared<Good>(10, "Adamantium", 110.0, 45));
-    goods.push_back(std::make_shared<Good>(11, "Drachenschuppen", 95.0, 35));
-    goods.push_back(std::make_shared<Good>(12, "Sternenstaub", 180.0, 30));
+   ......
 }
