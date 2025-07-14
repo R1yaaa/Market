@@ -114,3 +114,8 @@ zusätzlich:
 - [ ] Ausnahmen hinzufügen
 - [ ] Unittests implementieren
 - [ ] Zeitplan
+
+
+
+
+server starten: uvicorn fastapi_server:app --reload
