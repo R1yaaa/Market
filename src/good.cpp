@@ -1,3 +1,10 @@
+/**
+ * @file good.cpp
+ * @author saja
+ * @brief 
+ * 
+ */
+
 #include "../include/good.hpp"
 #include <algorithm>
 #include <cmath>

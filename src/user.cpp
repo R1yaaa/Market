@@ -1,3 +1,10 @@
+/**
+ * @file user.cpp
+ * @author saja
+ * @brief 
+ * 
+ */
+
 #include "../include/user.hpp"
 #include <functional>
 #include <algorithm>

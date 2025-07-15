@@ -1,3 +1,10 @@
+/**
+ * @file account.cpp
+ * @author saja
+ * @brief 
+ * 
+ */
+
 #include "account.hpp"
 #include <algorithm>
 

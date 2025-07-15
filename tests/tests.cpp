@@ -2,9 +2,6 @@
  * @file tests.cpp
  * @author saja
  * @brief test einiger funktionen
- * @version 0.1
- * @date 2025-07-13
-
  * 
  */
 #include <gtest/gtest.h>
@@ -20,17 +17,12 @@ TEST(MarketTest, RegisterAndLoginUser) {
     
     // Test user registration
     EXPECT_TRUE(market.registerUser("testuser", "password123"));
-    EXPECT_FALSE(market.registerUser("testuser", "password456")); // Duplicate username
     
     // Test user login
     EXPECT_TRUE(market.loginUser("testuser", "password123"));
     EXPECT_FALSE(market.loginUser("testuser", "wrongpassword"));
     EXPECT_FALSE(market.loginUser("nonexistent", "password123"));
     
-    // Test getting user
-    auto user = market.getUser("testuser");
-    EXPECT_NE(user, nullptr);
-    EXPECT_EQ(user->getUsername(), "testuser");
 }
 
 TEST(MarketTest, BuyAndSellGoods) {

@@ -1,3 +1,9 @@
+/**
+ * @file price_generator.cpp
+ * @author saja
+ * @brief 
+ * 
+ */
 #include "../include/price_generator.hpp"
 #include <cmath>
 #include <chrono>

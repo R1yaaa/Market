@@ -1,3 +1,10 @@
+/**
+ * @file market.cpp
+ * @author saja
+ * @brief 
+ * 
+ */
+
 #include "../include/market.hpp"
 #include <algorithm>
 
