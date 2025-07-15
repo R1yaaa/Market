@@ -156,7 +156,11 @@ class MainWindow(QWidget):
                         inv["Name"], inv["Price"], inv["Quantity"], inv["ID"]
                     )):
                         self.ui.tableWidgetInventory.insertRow(i)
-                        self.ui.tableWidgetInventory.setItem(i, 0, QTableWidgetItem(str(name)))
+
+                        item_name = QTableWidgetItem(name)  #hover
+                        item_name.setToolTip(name)
+
+                        self.ui.tableWidgetInventory.setItem(i, 0, QTableWidgetItem(item_name))
                         self.ui.tableWidgetInventory.setItem(i, 1, QTableWidgetItem(f"{preis:.2f}"))
                         self.ui.tableWidgetInventory.setItem(i, 2, QTableWidgetItem(str(menge)))
                         self.ui.tableWidgetInventory.setItem(i, 3, QTableWidgetItem(str(gid)))
@@ -225,7 +229,11 @@ class MainWindow(QWidget):
                         goods["Name"], goods["Price"], goods["Quantity"], goods["ID"])):
                      
                         self.ui.tableGueter.insertRow(i)
-                        self.ui.tableGueter.setItem(i, 0, QTableWidgetItem(name))
+
+                        item_name = QTableWidgetItem(name)  #hover
+                        item_name.setToolTip(name)
+
+                        self.ui.tableGueter.setItem(i, 0, QTableWidgetItem(item_name))
                         self.ui.tableGueter.setItem(i, 1, QTableWidgetItem(f"{preis:.2f}"))
                         self.ui.tableGueter.setItem(i, 2, QTableWidgetItem(str(menge)))
                         self.ui.tableGueter.setItem(i, 3, QTableWidgetItem(str(gid)))
